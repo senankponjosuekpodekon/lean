@@ -1,23 +1,32 @@
+import { Suspense } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/PageHeader";
+import { getInfoDictionary } from "@/lib/i18n-info";
+import type { Locale } from "@/lib/i18n";
 
-const steps = [
-  { title: "Simulation", desc: "Berechnen Sie eine unverbindliche Monatsrate." },
-  { title: "Anfrage senden", desc: "Füllen Sie das Online-Formular Schritt für Schritt aus." },
-  { title: "Angaben prüfen", desc: "Überprüfen Sie Ihre Angaben vor dem Absenden." },
-  { title: "Unterlagen einreichen", desc: "Falls erforderlich, reichen Sie die nötigen Dokumente ein." },
-  { title: "Prüfung abwarten", desc: "Der zuständige Kreditgeber prüft Ihre Anfrage." },
-  { title: "Entscheidung erhalten", desc: "Sie erhalten die Entscheidung und die geltenden Konditionen." },
-];
+export default function AblaufPage({ params }: { params: Promise<{ lang: Locale }> }) {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh]" />}>
+      <AblaufAsync params={params} />
+    </Suspense>
+  );
+}
 
-export default function AblaufPage() {
+async function AblaufAsync({ params }: { params: Promise<{ lang: Locale }> }) {
+  const { lang } = await params;
+  const t = getInfoDictionary(lang);
+
+  const steps = [
+    { title: t.processStep1, desc: t.processStep1Text },
+    { title: t.processStep2, desc: t.processStep2Text },
+    { title: t.processStep3, desc: t.processStep3Text },
+    { title: t.processStep4, desc: t.processStep4Text },
+  ];
+
   return (
     <div className="max-w-7xl mx-auto px-5 lg:px-12 py-12 lg:py-20">
-      <PageHeader
-        title="So funktioniert Ihre Finanzierungsanfrage"
-        description="Von der ersten Berechnung bis zur Entscheidung: Hier erfahren Sie, welche Schritte vorgesehen sind."
-      />
+      <PageHeader title={t.processTitle} description={t.processDescription} />
 
       <div className="max-w-3xl mx-auto space-y-6">
         {steps.map((step, index) => (
@@ -34,14 +43,12 @@ export default function AblaufPage() {
       </div>
 
       <div className="mt-12 flex flex-col sm:flex-row justify-center gap-4">
-        <Button href="/de/kreditrechner" variant="outline">Kreditrechner öffnen</Button>
-        <Button href="/de/antrag">Finanzierung anfragen</Button>
+        <Button href={`/${lang}/kreditrechner`} variant="outline">{t.processStep1.split(".")[1]}</Button>
+        <Button href={`/${lang}/antrag`}>{t.processStep2.split(".")[1]}</Button>
       </div>
 
       <Card className="mt-12 bg-warning/5 border-warning/20">
-        <p className="text-text-secondary">
-          Keine der hier genannten Schritte garantiert eine Zusage oder ein fixes Datum für die Auszahlung. Die tatsächliche Dauer hängt vom Produkt und von Ihrer individuellen Situation ab.
-        </p>
+        <p className="text-text-secondary">{t.processDisclaimer}</p>
       </Card>
     </div>
   );

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { getAdminDictionary } from "@/lib/i18n-admin";
 
 interface Application {
   reference: string;
@@ -18,6 +19,7 @@ interface Application {
 }
 
 export default function AdminPage() {
+  const t = getAdminDictionary();
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -35,11 +37,10 @@ export default function AdminPage() {
   }, [authenticated]);
 
   const login = () => {
-    // Prototype only: compare against env variable
     if (password === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin2026")) {
       setAuthenticated(true);
     } else {
-      alert("Falsches Passwort");
+      alert(t.wrongPassword);
     }
   };
 
@@ -58,10 +59,10 @@ export default function AdminPage() {
     return (
       <div className="max-w-md mx-auto px-5 py-20">
         <Card className="p-6 space-y-4">
-          <h1 className="font-heading text-2xl font-bold text-primary">Admin-Anmeldung</h1>
-          <p className="text-sm text-text-secondary">Prototyp: Passwort muss vor Produktion ersetzt werden.</p>
-          <Input label="Passwort" name="password" type="password" value={password} onChange={setPassword} />
-          <Button onClick={login}>Anmelden</Button>
+          <h1 className="font-heading text-2xl font-bold text-primary">{t.loginTitle}</h1>
+          <p className="text-sm text-text-secondary">{t.loginNote}</p>
+          <Input label={t.passwordLabel} name="password" type="password" value={password} onChange={setPassword} />
+          <Button onClick={login}>{t.loginButton}</Button>
         </Card>
       </div>
     );
@@ -69,17 +70,17 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-5 lg:px-12 py-12">
-      <h1 className="font-heading text-3xl font-bold text-primary mb-6">Antragsübersicht</h1>
+      <h1 className="font-heading text-3xl font-bold text-primary mb-6">{t.overviewTitle}</h1>
       <Card className="overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-background border-b border-border">
             <tr>
-              <th className="text-left p-3 font-semibold text-text">Referenz</th>
-              <th className="text-left p-3 font-semibold text-text">Name</th>
-              <th className="text-left p-3 font-semibold text-text">Betrag</th>
-              <th className="text-left p-3 font-semibold text-text">Zweck</th>
-              <th className="text-left p-3 font-semibold text-text">Status</th>
-              <th className="text-left p-3 font-semibold text-text">Aktionen</th>
+              <th className="text-left p-3 font-semibold text-text">{t.reference}</th>
+              <th className="text-left p-3 font-semibold text-text">{t.name}</th>
+              <th className="text-left p-3 font-semibold text-text">{t.amount}</th>
+              <th className="text-left p-3 font-semibold text-text">{t.purpose}</th>
+              <th className="text-left p-3 font-semibold text-text">{t.status}</th>
+              <th className="text-left p-3 font-semibold text-text">{t.actions}</th>
             </tr>
           </thead>
           <tbody>
@@ -91,15 +92,15 @@ export default function AdminPage() {
                 <td className="p-3 text-text-secondary">{app.purpose}</td>
                 <td className="p-3 text-text-secondary">{app.statusLabel}</td>
                 <td className="p-3 flex flex-wrap gap-2">
-                  <Button onClick={() => updateStatus(app.reference, "reviewing", "In Prüfung")} className="h-8 px-3 text-xs" disabled={loading}>Prüfen</Button>
-                  <Button onClick={() => updateStatus(app.reference, "in_analysis", "In Analyse")} className="h-8 px-3 text-xs" disabled={loading}>Analyse</Button>
-                  <Button onClick={() => updateStatus(app.reference, "closed", "Abgeschlossen")} className="h-8 px-3 text-xs" disabled={loading}>Schließen</Button>
+                  <Button onClick={() => updateStatus(app.reference, "reviewing", "In Prüfung")} className="h-8 px-3 text-xs" disabled={loading}>{t.review}</Button>
+                  <Button onClick={() => updateStatus(app.reference, "in_analysis", "In Analyse")} className="h-8 px-3 text-xs" disabled={loading}>{t.analysis}</Button>
+                  <Button onClick={() => updateStatus(app.reference, "closed", "Abgeschlossen")} className="h-8 px-3 text-xs" disabled={loading}>{t.close}</Button>
                 </td>
               </tr>
             ))}
             {applications.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-6 text-center text-text-secondary">Noch keine Anfragen vorhanden.</td>
+                <td colSpan={6} className="p-6 text-center text-text-secondary">{t.empty}</td>
               </tr>
             )}
           </tbody>
