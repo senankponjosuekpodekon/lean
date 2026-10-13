@@ -10,7 +10,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: `Missing field: ${field}` }, { status: 400 });
       }
     }
-    const app = createApplication(body);
+    const app = await createApplication(body);
     return NextResponse.json({ reference: app.reference, status: app.status, createdAt: app.createdAt }, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });

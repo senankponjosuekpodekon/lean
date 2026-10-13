@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Finanzierung online anfragen",
+  title: "Velmora — Financing, made clearer",
   description: "Informieren Sie sich über Finanzierungsmöglichkeiten, berechnen Sie eine unverbindliche Monatsrate und stellen Sie Ihre Anfrage online.",
 };
 

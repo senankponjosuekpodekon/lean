@@ -28,7 +28,7 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-surface/90 backdrop-blur border-b border-border">
       <div className="max-w-7xl mx-auto px-5 lg:px-12 h-16 flex items-center justify-between">
         <Link href={localPath("/de", lang)} className="font-heading font-bold text-xl text-primary">
-          Finanzierung.DE
+          Velmora
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">

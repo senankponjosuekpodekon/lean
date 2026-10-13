@@ -42,7 +42,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-5 lg:px-12 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <p className="font-heading font-bold text-lg text-primary">Finanzierung.DE</p>
+            <p className="font-heading font-bold text-lg text-primary">Velmora</p>
             <p className="mt-2 text-sm text-text-secondary max-w-sm">
               Klarheit, Transparenz und verständliche Informationen zu Ihrer Finanzierungsanfrage.
             </p>
