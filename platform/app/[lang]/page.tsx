@@ -33,10 +33,10 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
   ];
 
   const solutions = [
-    { key: "personal", label: t.personalProject, desc: t.personalProjectDesc, icon: "/icons/icon-personal.svg" },
-    { key: "vehicle", label: t.vehicle, desc: t.vehicleDesc, icon: "/icons/icon-vehicle.svg" },
-    { key: "renovation", label: t.renovation, desc: t.renovationDesc, icon: "/icons/icon-renovation.svg" },
-    { key: "business", label: t.business, desc: t.businessDesc, icon: "/icons/icon-business.svg" },
+    { key: "personal", label: t.personalProject, desc: t.personalProjectDesc, image: "/images/project-personal.svg" },
+    { key: "vehicle", label: t.vehicle, desc: t.vehicleDesc, image: "/images/project-vehicle.svg" },
+    { key: "renovation", label: t.renovation, desc: t.renovationDesc, image: "/images/project-renovation.svg" },
+    { key: "business", label: t.business, desc: t.businessDesc, image: "/images/project-business.svg" },
   ];
 
   const steps = [
@@ -116,10 +116,8 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {solutions.map((s, i) => (
-            <Card key={s.key} className={`flex flex-col items-center text-center p-8 hover:shadow-md transition-shadow animate-fade-in-up stagger-${i + 1}`}>
-              <div className="w-16 h-16 rounded-2xl bg-accent-secondary/50 flex items-center justify-center mb-5">
-                <img src={s.icon} alt="" width="40" height="40" className="opacity-90" />
-              </div>
+            <Card key={s.key} className={`flex flex-col items-center text-center p-6 hover:shadow-md transition-shadow animate-fade-in-up stagger-${i + 1}`}>
+              <img src={s.image} alt={s.label} width="240" height="160" className="w-full h-32 object-cover rounded-xl mb-5" />
               <h3 className="font-heading text-xl font-bold text-primary mb-2">{s.label}</h3>
               <p className="text-text-secondary text-sm leading-relaxed">{s.desc}</p>
             </Card>
