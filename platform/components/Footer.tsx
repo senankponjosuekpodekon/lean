@@ -43,9 +43,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <p className="font-heading font-bold text-lg text-primary">Velmora</p>
-            <p className="mt-2 text-sm text-text-secondary max-w-sm">
-              Klarheit, Transparenz und verständliche Informationen zu Ihrer Finanzierungsanfrage.
-            </p>
+            <p className="mt-2 text-sm text-text-secondary max-w-sm">{t.footerTagline}</p>
           </div>
           <div>
             <p className="font-semibold text-sm text-text mb-3">{t.service}</p>
@@ -69,9 +67,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-10 pt-6 border-t border-border">
-          <p className="text-xs text-text-secondary">
-            © {year || "2026"} Beispielmarke. Rechtliche Angaben müssen vor Veröffentlichung bestätigt werden.
-          </p>
+          <p className="text-xs text-text-secondary">{t.copyright.replace("{year}", year || "2026")}</p>
         </div>
       </div>
     </footer>
