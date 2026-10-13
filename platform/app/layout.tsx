@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Poppins, Open_Sans } from "next/font/google";
+import { Manrope, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
-const poppins = Poppins({
+const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["600", "700"],
 });
 
-const openSans = Open_Sans({
+const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${poppins.variable} ${openSans.variable} h-full antialiased`}>
+    <html lang="de" className={`${manrope.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-text">
         <Suspense fallback={<header className="h-16 border-b border-border" />}>
           <Header />

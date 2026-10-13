@@ -25,9 +25,9 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-primary border-b border-primary-hover">
+    <header className="sticky top-0 z-50 bg-surface/90 backdrop-blur border-b border-border">
       <div className="max-w-7xl mx-auto px-5 lg:px-12 h-16 flex items-center justify-between">
-        <Link href={localPath("/de", lang)} className="font-heading font-bold text-xl text-white">
+        <Link href={localPath("/de", lang)} className="font-heading font-bold text-xl text-primary">
           Velmora
         </Link>
 
@@ -36,7 +36,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-white/90 hover:text-accent transition-colors"
+              className="text-sm font-medium text-text hover:text-primary transition-colors"
             >
               {link.label}
             </Link>
@@ -53,20 +53,20 @@ export function Header() {
               const newPath = currentPath.replace(/^\/(de|fr|es|it|pt)/, `/${newLang}`);
               window.location.href = newPath;
             }}
-            className="h-9 px-2 rounded-lg border border-white/20 bg-white/10 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent/50"
+            className="h-9 px-2 rounded-lg border border-border bg-surface text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
           >
             {locales.map((l) => (
               <option key={l} value={l}>{l.toUpperCase()}</option>
             ))}
           </select>
-          <Button href={localPath("/de/kreditrechner", lang)} variant="secondary" className="hidden sm:flex h-10 px-4 text-sm">
+          <Button href={localPath("/de/kreditrechner", lang)} variant="primary" className="hidden sm:flex h-10 px-4 text-sm">
             {t.calculateCredit}
           </Button>
 
           <button
             onClick={() => setOpen(!open)}
             aria-label={open ? "Menü schließen" : "Menü öffnen"}
-            className="md:hidden p-2 rounded-lg text-white hover:bg-white/10"
+            className="md:hidden p-2 rounded-lg text-primary hover:bg-primary/5"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {open ? (
@@ -80,19 +80,19 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-white/10 bg-primary-hover animate-fade-in">
+        <div className="md:hidden border-t border-border bg-surface animate-fade-in">
           <nav className="flex flex-col px-5 py-4 gap-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="py-3 text-base font-medium text-white hover:text-accent border-b border-white/10 last:border-0"
+                className="py-3 text-base font-medium text-text hover:text-primary border-b border-border last:border-0"
               >
                 {link.label}
               </Link>
             ))}
-            <Button href={localPath("/de/kreditrechner", lang)} variant="secondary" className="mt-4 h-12">
+            <Button href={localPath("/de/kreditrechner", lang)} variant="primary" className="mt-4 h-12">
               {t.calculateCredit}
             </Button>
           </nav>
