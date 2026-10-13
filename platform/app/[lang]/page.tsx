@@ -55,7 +55,10 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
   return (
     <div className="flex flex-col gap-20 lg:gap-28">
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-5 lg:px-12 pt-12 lg:pt-20 pb-8 w-full animate-fade-in-up">
+      <section className="relative max-w-7xl mx-auto px-5 lg:px-12 pt-12 lg:pt-20 pb-8 w-full animate-fade-in-up">
+        <div className="absolute right-0 top-0 -z-10 opacity-40 pointer-events-none hidden lg:block">
+          <img src="/hero-illustration.svg" alt="" width="400" height="267" className="opacity-60" />
+        </div>
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="flex flex-col gap-6">
             <h1 className="font-heading text-4xl lg:text-6xl font-bold text-primary leading-[1.1]">

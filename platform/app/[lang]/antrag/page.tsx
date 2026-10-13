@@ -64,6 +64,7 @@ export default function AntragPage() {
   const [selectedDocs, setSelectedDocs] = useState<string[]>([]);
   const [confirmed, setConfirmed] = useState(false);
   const [privacy, setPrivacy] = useState(false);
+  const [reference, setReference] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -114,8 +115,34 @@ export default function AntragPage() {
 
   const submit = async () => {
     setSubmitted("loading");
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    setSubmitted("success");
+    try {
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amountCents,
+          termMonths: term,
+          purpose,
+          firstName,
+          lastName,
+          email,
+          phone,
+          status,
+          occupation,
+          income,
+          expenses,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setReference(data.reference);
+        setSubmitted("success");
+      } else {
+        setSubmitted("error");
+      }
+    } catch {
+      setSubmitted("error");
+    }
   };
 
   if (submitted === "success") {
@@ -127,7 +154,7 @@ export default function AntragPage() {
             Ihre Anfrage wurde empfangen. Wir prüfen die übermittelten Angaben und informieren Sie über die nächsten Schritte.
           </p>
           <div className="mt-6 space-y-2 text-text-secondary">
-            <p>Referenz: AN-2026-001</p>
+            <p>Referenz: {reference || "AN-2026-001"}</p>
             <p>Datum: {new Date().toLocaleDateString("de-DE")}</p>
           </div>
           <p className="mt-4 text-sm text-text-secondary">
