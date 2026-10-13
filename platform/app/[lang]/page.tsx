@@ -97,8 +97,9 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
       </section>
 
       {/* Transparence */}
-      <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full">
-        <div className="grid md:grid-cols-3 gap-6">
+      <section className="w-full bg-surface rounded-3xl py-12 lg:py-20">
+        <div className="max-w-7xl mx-auto px-5 lg:px-12">
+          <div className="grid md:grid-cols-3 gap-6">
           {transparency.map((t, i) => (
             <Card key={t.title} className={`p-6 animate-fade-in-up stagger-${i + 1}`}>
               <h2 className="font-heading text-lg font-bold text-primary mb-2">{t.title}</h2>
@@ -106,11 +107,13 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
             </Card>
           ))}
         </div>
+        </div>
       </section>
 
       {/* Solutions */}
-      <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full animate-fade-in-up">
-        <div className="text-center mb-10">
+      <section className="w-full bg-accent-secondary/30 rounded-3xl py-12 lg:py-20 animate-fade-in-up">
+        <div className="max-w-7xl mx-auto px-5 lg:px-12">
+          <div className="text-center mb-10">
           <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">{t.whichProject}</h2>
           <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">{t.solutionsSubtitle}</p>
         </div>
@@ -123,11 +126,13 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
             </Card>
           ))}
         </div>
+        </div>
       </section>
 
       {/* Étapes */}
-      <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full animate-fade-in-up">
-        <div className="text-center mb-10">
+      <section className="w-full bg-surface rounded-3xl py-12 lg:py-20 animate-fade-in-up">
+        <div className="max-w-7xl mx-auto px-5 lg:px-12">
+          <div className="text-center mb-10">
           <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">{t.howItWorksTitle}</h2>
           <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">{t.stepsSubtitle}</p>
         </div>
@@ -143,11 +148,13 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
             </Card>
           ))}
         </div>
+        </div>
       </section>
 
       {/* FAQ */}
-      <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full animate-fade-in-up">
-        <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary text-center">{t.faqTitle}</h2>
+      <section className="w-full bg-accent-secondary/30 rounded-3xl py-12 lg:py-20 animate-fade-in-up">
+        <div className="max-w-7xl mx-auto px-5 lg:px-12">
+          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary text-center">{t.faqTitle}</h2>
         <div className="mt-8 max-w-3xl mx-auto space-y-4">
           {faq.map((item, i) => (
             <Card key={item.q} className={`p-6 animate-fade-in-up stagger-${i + 1}`}>
@@ -155,6 +162,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
               <p className="mt-2 text-text-secondary leading-relaxed">{item.a}</p>
             </Card>
           ))}
+        </div>
         </div>
       </section>
 
