@@ -1,24 +1,33 @@
 "use client";
 
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Button } from "./ui/Button";
+import { getDictionary, locales, type Locale } from "@/lib/i18n";
 
-const navLinks = [
-  { href: "/de/finanzierung", label: "Finanzierung" },
-  { href: "/de/kreditrechner", label: "Kreditrechner" },
-  { href: "/de/so-funktioniert-es", label: "So funktioniert's" },
-  { href: "/de/faq", label: "FAQ" },
-  { href: "/de/kontakt", label: "Kontakt" },
-];
+function localPath(path: string, lang: Locale) {
+  return path.replace(/^\/(de|fr|es|it|pt)\//, `/${lang}/`);
+}
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const params = useParams();
+  const lang = (params?.lang as Locale) || "de";
+  const t = getDictionary(lang);
+
+  const navLinks = [
+    { href: localPath("/de/finanzierung", lang), label: t.financing },
+    { href: localPath("/de/kreditrechner", lang), label: t.calculator },
+    { href: localPath("/de/so-funktioniert-es", lang), label: t.howItWorks },
+    { href: localPath("/de/faq", lang), label: t.faq },
+    { href: localPath("/de/kontakt", lang), label: t.contact },
+  ];
 
   return (
     <header className="sticky top-0 z-50 bg-surface/90 backdrop-blur border-b border-border">
       <div className="max-w-7xl mx-auto px-5 lg:px-12 h-16 flex items-center justify-between">
-        <Link href="/de" className="font-heading font-bold text-xl text-primary">
+        <Link href={localPath("/de", lang)} className="font-heading font-bold text-xl text-primary">
           Finanzierung.DE
         </Link>
 
@@ -34,10 +43,24 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-text-secondary hidden sm:inline">DE</span>
-          <Button href="/de/kreditrechner" variant="primary" className="hidden sm:flex h-10 px-4 text-sm">
-            Kredit berechnen
+        <div className="flex items-center gap-3">
+          <select
+            aria-label="Sprache"
+            value={lang}
+            onChange={(e) => {
+              const newLang = e.target.value;
+              const currentPath = window.location.pathname;
+              const newPath = currentPath.replace(/^\/(de|fr|es|it|pt)/, `/${newLang}`);
+              window.location.href = newPath;
+            }}
+            className="h-9 px-2 rounded-lg border border-border bg-surface text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
+          >
+            {locales.map((l) => (
+              <option key={l} value={l}>{l.toUpperCase()}</option>
+            ))}
+          </select>
+          <Button href={localPath("/de/kreditrechner", lang)} variant="primary" className="hidden sm:flex h-10 px-4 text-sm">
+            {t.calculateCredit}
           </Button>
 
           <button
@@ -57,7 +80,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-border bg-surface">
+        <div className="md:hidden border-t border-border bg-surface animate-fade-in">
           <nav className="flex flex-col px-5 py-4 gap-2">
             {navLinks.map((link) => (
               <Link
@@ -69,8 +92,8 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Button href="/de/kreditrechner" variant="primary" className="mt-4 h-12">
-              Kredit berechnen
+            <Button href={localPath("/de/kreditrechner", lang)} variant="primary" className="mt-4 h-12">
+              {t.calculateCredit}
             </Button>
           </nav>
         </div>

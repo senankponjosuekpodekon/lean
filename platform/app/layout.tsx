@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Manrope, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
@@ -25,9 +26,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de" className={`${manrope.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-text">
-        <Header />
+        <Suspense fallback={<header className="h-16 border-b border-border" />}>
+          <Header />
+        </Suspense>
         {children}
-        <Footer />
+        <Suspense fallback={<footer className="h-24 border-t border-border" />}>
+          <Footer />
+        </Suspense>
       </body>
     </html>
   );

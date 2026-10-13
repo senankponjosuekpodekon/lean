@@ -28,6 +28,13 @@ const employmentStatuses = [
   "Sonstiges",
 ];
 
+const documents = [
+  "Lohnabrechnung oder Einkommensnachweis",
+  "Kopie des Personalausweises/Reisepasses",
+  "Mietvertrag oder Eigentumsnachweis",
+  "Kontoauszüge der letzten 3 Monate",
+];
+
 export default function AntragPage() {
   const [step, setStep] = useState<Step>(1);
   const [submitted, setSubmitted] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -39,14 +46,22 @@ export default function AntragPage() {
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [street, setStreet] = useState("");
+  const [zip, setZip] = useState("");
+  const [city, setCity] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
   const [status, setStatus] = useState(employmentStatuses[0]);
   const [occupation, setOccupation] = useState("");
+  const [employer, setEmployer] = useState("");
+  const [tenure, setTenure] = useState("");
   const [income, setIncome] = useState("");
   const [expenses, setExpenses] = useState("");
+  const [existingLoans, setExistingLoans] = useState("");
 
+  const [selectedDocs, setSelectedDocs] = useState<string[]>([]);
   const [confirmed, setConfirmed] = useState(false);
   const [privacy, setPrivacy] = useState(false);
 
@@ -76,7 +91,7 @@ export default function AntragPage() {
       return amountCents >= LOAN_CONFIG.minAmountCents && LOAN_CONFIG.availableTerms.includes(term);
     }
     if (step === 2) {
-      return firstName && lastName && email.includes("@") && phone;
+      return firstName && lastName && birthDate && street && zip && city && email.includes("@") && phone;
     }
     if (step === 3) {
       return occupation && income && expenses;
@@ -105,16 +120,19 @@ export default function AntragPage() {
 
   if (submitted === "success") {
     return (
-      <div className="max-w-3xl mx-auto px-5 lg:px-12 py-20">
+      <div className="max-w-3xl mx-auto px-5 lg:px-12 py-20 animate-fade-in-up">
         <Card className="text-center bg-success/5 border-success/20">
           <h1 className="font-heading text-2xl lg:text-4xl font-bold text-success">Vielen Dank für Ihre Anfrage</h1>
           <p className="mt-4 text-text-secondary">
-            Ihre Anfrage wurde erfolgreich übermittelt. Wir prüfen die übermittelten Angaben und informieren Sie über die nächsten Schritte, sofern eine weitere Bearbeitung möglich ist.
+            Ihre Anfrage wurde empfangen. Wir prüfen die übermittelten Angaben und informieren Sie über die nächsten Schritte.
           </p>
           <div className="mt-6 space-y-2 text-text-secondary">
             <p>Referenz: AN-2026-001</p>
             <p>Datum: {new Date().toLocaleDateString("de-DE")}</p>
           </div>
+          <p className="mt-4 text-sm text-text-secondary">
+            Dies ist eine Empfangsbestätigung, keine Zusage.
+          </p>
           <div className="mt-8">
             <Button href="/de">Zur Startseite</Button>
           </div>
@@ -140,41 +158,43 @@ export default function AntragPage() {
     );
   }
 
+  const stepLabels: Record<number, string> = {
+    1: "Projekt",
+    2: "Persönliches",
+    3: "Finanzen",
+    4: "Unterlagen",
+    5: "Prüfen",
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-5 lg:px-12 py-12 lg:py-20">
-      <div className="max-w-3xl mx-auto text-center mb-10">
+      <div className="max-w-3xl mx-auto text-center mb-10 animate-fade-in-up">
         <h1 className="font-heading text-3xl lg:text-5xl font-bold text-primary">Finanzierung anfragen</h1>
         <p className="mt-4 text-text-secondary">Bitte füllen Sie die folgenden Schritte aus. Sie können Ihre Angaben vor dem Absenden überprüfen.</p>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8 items-start">
-        {/* Form */}
         <div className="lg:col-span-2 space-y-6">
           {/* Stepper */}
           <div className="flex items-center justify-between mb-6">
-            {[1, 2, 3, 4].map((s) => (
+            {[1, 2, 3, 4, 5].map((s) => (
               <div key={s} className="flex flex-col items-center gap-2">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
                     s <= step ? "bg-accent text-white" : "bg-border text-text-secondary"
                   }`}
                 >
                   {s}
                 </div>
-                <span className="hidden sm:block text-xs text-text-secondary">
-                  {s === 1 && "Finanzierung"}
-                  {s === 2 && "Persönliches"}
-                  {s === 3 && "Situation"}
-                  {s === 4 && "Prüfen"}
-                </span>
+                <span className="hidden sm:block text-xs text-text-secondary">{stepLabels[s]}</span>
               </div>
             ))}
           </div>
 
-          <Card>
+          <Card className="animate-fade-in">
             {step === 1 && (
               <div className="space-y-6">
-                <h2 className="font-heading text-2xl font-bold text-primary">Welche Finanzierung wünschen Sie?</h2>
+                <h2 className="font-heading text-2xl font-bold text-primary">1. Projekt und Betrag</h2>
                 <Input
                   label="Gewünschter Kreditbetrag (€)"
                   name="amount"
@@ -187,7 +207,7 @@ export default function AntragPage() {
                   <select
                     value={term}
                     onChange={(e) => setTerm(Number(e.target.value))}
-                    className="h-12 px-4 rounded-xl border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="h-12 px-4 rounded-lg border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
                   >
                     {LOAN_CONFIG.availableTerms.map((t) => (
                       <option key={t} value={t}>{t} Monate</option>
@@ -199,7 +219,7 @@ export default function AntragPage() {
                   <select
                     value={purpose}
                     onChange={(e) => setPurpose(e.target.value)}
-                    className="h-12 px-4 rounded-xl border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="h-12 px-4 rounded-lg border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
                   >
                     {purposes.map((p) => (
                       <option key={p} value={p}>{p}</option>
@@ -217,31 +237,33 @@ export default function AntragPage() {
 
             {step === 2 && (
               <div className="space-y-6">
-                <h2 className="font-heading text-2xl font-bold text-primary">Ihre persönlichen Angaben</h2>
+                <h2 className="font-heading text-2xl font-bold text-primary">2. Persönliche Angaben</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Input label="Vorname" name="firstName" value={firstName} onChange={setFirstName} required />
                   <Input label="Nachname" name="lastName" value={lastName} onChange={setLastName} required />
                 </div>
-                <Input label="Geburtsdatum" name="birthDate" type="date" value="" onChange={() => {}} />
-                <Input label="Straße und Hausnummer" name="street" value="" onChange={() => {}} />
+                <Input label="Geburtsdatum" name="birthDate" type="date" value={birthDate} onChange={setBirthDate} required />
+                <Input label="Straße und Hausnummer" name="street" value={street} onChange={setStreet} required />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Input label="Postleitzahl" name="zip" value="" onChange={() => {}} />
-                  <Input label="Wohnort" name="city" value="" onChange={() => {}} />
+                  <Input label="Postleitzahl" name="zip" value={zip} onChange={setZip} required />
+                  <Input label="Wohnort" name="city" value={city} onChange={setCity} required />
                 </div>
-                <Input label="E-Mail-Adresse" name="email" type="email" value={email} onChange={setEmail} required />
-                <Input label="Telefonnummer" name="phone" type="tel" value={phone} onChange={setPhone} required />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Input label="E-Mail-Adresse" name="email" type="email" value={email} onChange={setEmail} required />
+                  <Input label="Telefonnummer" name="phone" type="tel" value={phone} onChange={setPhone} required />
+                </div>
               </div>
             )}
 
             {step === 3 && (
               <div className="space-y-6">
-                <h2 className="font-heading text-2xl font-bold text-primary">Ihre berufliche und finanzielle Situation</h2>
+                <h2 className="font-heading text-2xl font-bold text-primary">3. Berufliche und finanzielle Situation</h2>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-medium text-text">Beruflicher Status</label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    className="h-12 px-4 rounded-xl border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="h-12 px-4 rounded-lg border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
                   >
                     {employmentStatuses.map((s) => (
                       <option key={s} value={s}>{s}</option>
@@ -249,14 +271,50 @@ export default function AntragPage() {
                   </select>
                 </div>
                 <Input label="Beruf oder Tätigkeit" name="occupation" value={occupation} onChange={setOccupation} required />
+                <Input label="Arbeitgeber (falls zutreffend)" name="employer" value={employer} onChange={setEmployer} />
+                <Input label="Beschäftigungsdauer" name="tenure" value={tenure} onChange={setTenure} helpText="z. B. 3 Jahre" />
                 <Input label="Monatliches Nettoeinkommen (€)" name="income" type="text" value={income} onChange={setIncome} required />
                 <Input label="Monatliche Fixkosten (€)" name="expenses" type="text" value={expenses} onChange={setExpenses} required />
+                <Input label="Bestehende Kredite (€/Monat)" name="existingLoans" type="text" value={existingLoans} onChange={setExistingLoans} />
               </div>
             )}
 
             {step === 4 && (
               <div className="space-y-6">
-                <h2 className="font-heading text-2xl font-bold text-primary">Bitte prüfen Sie Ihre Angaben</h2>
+                <h2 className="font-heading text-2xl font-bold text-primary">4. Unterlagen und Zustimmung</h2>
+                <p className="text-text-secondary">Je nach Produkt können folgende Unterlagen erforderlich sein. Bitte wählen Sie diejenigen aus, die Sie bereits hochladen möchten:</p>
+                <div className="flex flex-col gap-3">
+                  {documents.map((doc) => (
+                    <label key={doc} className="flex items-start gap-3 p-3 rounded-lg border border-border bg-background hover:bg-accent-secondary/20 transition-colors cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedDocs.includes(doc)}
+                        onChange={(e) => {
+                          if (e.target.checked) setSelectedDocs((prev) => [...prev, doc]);
+                          else setSelectedDocs((prev) => prev.filter((d) => d !== doc));
+                        }}
+                        className="mt-1 h-4 w-4 accent-accent"
+                      />
+                      <span className="text-sm text-text">{doc}</span>
+                    </label>
+                  ))}
+                </div>
+                <div className="flex flex-col gap-3 pt-4">
+                  <label className="flex items-start gap-3">
+                    <input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} className="mt-1 h-4 w-4 accent-accent" />
+                    <span className="text-sm text-text">Ich bestätige, dass meine Angaben nach bestem Wissen richtig und vollständig sind.</span>
+                  </label>
+                  <label className="flex items-start gap-3">
+                    <input type="checkbox" checked={privacy} onChange={(e) => setPrivacy(e.target.checked)} className="mt-1 h-4 w-4 accent-accent" />
+                    <span className="text-sm text-text">Ich habe die <Link href="/de/datenschutz" className="text-accent hover:underline">Datenschutzhinweise</Link> gelesen.</span>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {step === 5 && (
+              <div className="space-y-6">
+                <h2 className="font-heading text-2xl font-bold text-primary">5. Zusammenfassung</h2>
                 <div className="space-y-3 text-sm">
                   <p><strong>Kreditbetrag:</strong> {formatCurrency(amountCents)}</p>
                   <p><strong>Laufzeit:</strong> {term} Monate</p>
@@ -266,30 +324,9 @@ export default function AntragPage() {
                   <p><strong>Telefon:</strong> {phone}</p>
                   <p><strong>Beruflicher Status:</strong> {status}</p>
                   <p><strong>Beruf:</strong> {occupation}</p>
-                </div>
-                <div className="flex flex-col gap-3 pt-4">
-                  <label className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={confirmed}
-                      onChange={(e) => setConfirmed(e.target.checked)}
-                      className="mt-1 h-4 w-4 accent-accent"
-                    />
-                    <span className="text-sm text-text">
-                      Ich bestätige, dass meine Angaben nach bestem Wissen richtig und vollständig sind.
-                    </span>
-                  </label>
-                  <label className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      checked={privacy}
-                      onChange={(e) => setPrivacy(e.target.checked)}
-                      className="mt-1 h-4 w-4 accent-accent"
-                    />
-                    <span className="text-sm text-text">
-                      Ich habe die <Link href="/de/datenschutz" className="text-accent hover:underline">Datenschutzhinweise</Link> gelesen.
-                    </span>
-                  </label>
+                  {selectedDocs.length > 0 && (
+                    <p><strong>Gewählte Unterlagen:</strong> {selectedDocs.join(", ")}</p>
+                  )}
                 </div>
                 <p className="text-sm text-text-secondary">
                   Das Absenden Ihrer Anfrage garantiert keine Kreditzusage. Eine Entscheidung erfolgt erst nach der erforderlichen Prüfung.
@@ -299,16 +336,12 @@ export default function AntragPage() {
 
             <div className="flex justify-between mt-8">
               {step > 1 ? (
-                <Button onClick={prevStep} variant="outline" className="w-auto">
-                  Zurück
-                </Button>
+                <Button onClick={prevStep} variant="outline" className="w-auto">Zurück</Button>
               ) : (
                 <div />
               )}
-              {step < 4 ? (
-                <Button onClick={nextStep} className="w-auto">
-                  Weiter
-                </Button>
+              {step < 5 ? (
+                <Button onClick={nextStep} className="w-auto">Weiter</Button>
               ) : (
                 <Button onClick={submit} disabled={submitted === "loading"} className="w-auto">
                   {submitted === "loading" ? "Wird gesendet..." : "Anfrage sicher absenden"}
@@ -318,8 +351,7 @@ export default function AntragPage() {
           </Card>
         </div>
 
-        {/* Summary */}
-        <Card className="bg-primary/5 border-primary/10">
+        <Card className="bg-primary/5 border-primary/10 animate-fade-in-up stagger-2">
           <h2 className="font-heading text-xl font-bold text-primary mb-4">Zusammenfassung</h2>
           {loanResult ? (
             <div className="space-y-3">
