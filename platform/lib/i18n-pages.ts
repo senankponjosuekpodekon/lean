@@ -1,0 +1,105 @@
+import { getDictionary, type Locale } from "./i18n";
+
+const pageDictionaries: Record<Locale, { faqTitle: string; faqDescription: string; faqs: { q: string; a: string }[]; contactTitle: string; contactDescription: string; nameLabel: string; emailLabel: string; messageLabel: string; sendButton: string; contactNote: string }> = {
+  de: {
+    faqTitle: "Häufige Fragen zur Finanzierung",
+    faqDescription: "Antworten zu den wichtigsten Fragen vor einer Finanzierungsanfrage.",
+    faqs: [
+      { q: "Ist die Berechnung verbindlich?", a: "Nein. Der Kreditrechner liefert eine unverbindliche Schätzung auf Basis der eingegebenen Werte. Maßgeblich sind die tatsächlichen Konditionen und ein gegebenenfalls abgeschlossener Vertrag." },
+      { q: "Wird jede Anfrage angenommen?", a: "Nein. Jede Anfrage unterliegt der erforderlichen Prüfung und einer Entscheidung des zuständigen Kreditgebers." },
+      { q: "Welche Unterlagen werden benötigt?", a: "Die benötigten Unterlagen hängen vom Finanzierungsprodukt und der individuellen Situation ab. Sie werden im jeweiligen Prozess mitgeteilt." },
+      { q: "Welche Kosten können entstehen?", a: "Mögliche Kosten müssen anhand des konkreten Produkts ausgewiesen werden. Prüfen Sie die vorvertraglichen Informationen, insbesondere den effektiven Jahreszins und die Gesamtkosten." },
+      { q: "Wie werden meine Daten geschützt?", a: "Informationen zur Verarbeitung, zu Speicherfristen und zu Ihren Rechten finden Sie in den Datenschutzhinweisen." },
+      { q: "Wie kann ich den Kundenservice erreichen?", a: "Nutzen Sie das Kontaktformular. Bitte beachten Sie, dass aktuell noch keine öffentlichen Telefonnummer oder E-Mail-Adresse hinterlegt ist." },
+    ],
+    contactTitle: "Kontakt",
+    contactDescription: "Senden Sie uns eine Nachricht. Wir melden uns bei Ihnen.",
+    nameLabel: "Name",
+    emailLabel: "E-Mail",
+    messageLabel: "Nachricht",
+    sendButton: "Nachricht senden",
+    contactNote: "Bitte geben Sie keine sensiblen Finanzdaten im Kontaktformular an.",
+  },
+  fr: {
+    faqTitle: "Questions fréquentes sur le financement",
+    faqDescription: "Réponses aux principales questions avant une demande de financement.",
+    faqs: [
+      { q: "Le calcul est-il contraignant ?", a: "Non. Le simulateur fournit une estimation indicative basée sur les valeurs saisies. Les conditions réelles et un éventuel contrat font foi." },
+      { q: "Toute demande est-elle acceptée ?", a: "Non. Chaque demande fait l'objet d'une vérification et d'une décision du prêteur concerné." },
+      { q: "Quels documents sont nécessaires ?", a: "Les documents requis dépendent du produit de financement et de votre situation. Ils vous sont communiqués au cours du processus." },
+      { q: "Quels coûts peuvent s'appliquer ?", a: "Les éventuels coûts doivent être indiqués selon le produit concerné. Vérifiez les informations précontractuelles, notamment le TAEG et le coût total." },
+      { q: "Comment mes données sont-elles protégées ?", a: "Les informations sur le traitement, les durées de conservation et vos droits figurent dans la politique de confidentialité." },
+      { q: "Comment contacter le service client ?", a: "Utilisez le formulaire de contact. Veuillez noter qu'aucun numéro de téléphone ou e-mail public n'est actuellement disponible." },
+    ],
+    contactTitle: "Contact",
+    contactDescription: "Envoyez-nous un message. Nous vous recontacterons.",
+    nameLabel: "Nom",
+    emailLabel: "E-mail",
+    messageLabel: "Message",
+    sendButton: "Envoyer le message",
+    contactNote: "Veuillez ne pas indiquer de données financières sensibles dans le formulaire de contact.",
+  },
+  es: {
+    faqTitle: "Preguntas frecuentes sobre financiación",
+    faqDescription: "Respuestas a las principales preguntas antes de una solicitud de financiación.",
+    faqs: [
+      { q: "¿El cálculo es vinculante?", a: "No. El simulador ofrece una estimación indicativa basada en los valores introducidos. Son vinculantes las condiciones reales y un posible contrato firmado." },
+      { q: "¿Se acepta cada solicitud?", a: "No. Cada solicitud está sujeta a la correspondiente verificación y a la decisión del prestamista." },
+      { q: "¿Qué documentos se necesitan?", a: "Los documentos requeridos dependen del producto de financiación y de la situación individual. Se indicarán durante el proceso." },
+      { q: "¿Qué costes pueden aplicarse?", a: "Los posibles costes deben indicarse según el producto concreto. Verifique la información precontractual, especialmente la TAE y el coste total." },
+      { q: "¿Cómo se protegen mis datos?", a: "La información sobre el tratamiento, plazos de conservación y sus derechos figura en la política de privacidad." },
+      { q: "¿Cómo contactar con atención al cliente?", a: "Utilice el formulario de contacto. Tenga en cuenta que actualmente no hay teléfono ni correo electrónico público disponible." },
+    ],
+    contactTitle: "Contacto",
+    contactDescription: "Envíenos un mensaje. Nos pondremos en contacto con usted.",
+    nameLabel: "Nombre",
+    emailLabel: "Correo electrónico",
+    messageLabel: "Mensaje",
+    sendButton: "Enviar mensaje",
+    contactNote: "Por favor, no incluya datos financieros sensibles en el formulario de contacto.",
+  },
+  it: {
+    faqTitle: "Domande frequenti sul finanziamento",
+    faqDescription: "Risposte alle principali domande prima di una richiesta di finanziamento.",
+    faqs: [
+      { q: "Il calcolo è vincolante?", a: "No. Il simulatore fornisce una stima indicativa basata sui valori inseriti. Fanno fede le condizioni reali e un eventuale contratto concluso." },
+      { q: "Ogni richiesta viene accettata?", a: "No. Ogni richiesta è soggetta alla necessaria verifica e alla decisione del finanziatore competente." },
+      { q: "Quali documenti sono necessari?", a: "I documenti richiesti dipendono dal prodotto di finanziamento e dalla situazione individuale. Vengono comunicati nel corso del processo." },
+      { q: "Quali costi possono sorgere?", a: "I possibili costi devono essere indicati in base al prodotto specifico. Verificate le informazioni precontrattuali, in particolare il TAEG e il costo totale." },
+      { q: "Come sono protetti i miei dati?", a: "Le informazioni sul trattamento, sui termini di conservazione e sui vostri diritti sono disponibili nell'informativa sulla privacy." },
+      { q: "Come contattare l'assistenza clienti?", a: "Utilizzate il modulo di contatto. Si noti che attualmente non è disponibile un numero di telefono o e-mail pubblico." },
+    ],
+    contactTitle: "Contatto",
+    contactDescription: "Inviateci un messaggio. Vi ricontatteremo.",
+    nameLabel: "Nome",
+    emailLabel: "E-mail",
+    messageLabel: "Messaggio",
+    sendButton: "Invia messaggio",
+    contactNote: "Si prega di non indicare dati finanziari sensibili nel modulo di contatto.",
+  },
+  pt: {
+    faqTitle: "Perguntas frequentes sobre financiamento",
+    faqDescription: "Respostas às principais questões antes de um pedido de financiamento.",
+    faqs: [
+      { q: "O cálculo é vinculativo?", a: "Não. O simulador fornece uma estimativa indicativa com base nos valores introduzidos. Vinculativas são as condições reais e um eventual contrato celebrado." },
+      { q: "Todos os pedidos são aceites?", a: "Não. Cada pedido está sujeito à verificação necessária e à decisão do financiador competente." },
+      { q: "Que documentos são necessários?", a: "Os documentos necessários dependem do produto de financiamento e da situação individual. São indicados durante o processo." },
+      { q: "Que custos podem aplicar-se?", a: "Os possíveis custos devem ser indicados de acordo com o produto específico. Verifique as informações pré-contratuais, nomeadamente a TAEG e o custo total." },
+      { q: "Como são protegidos os meus dados?", a: "As informações sobre o tratamento, prazos de conservação e os seus direitos constam da política de privacidade." },
+      { q: "Como contactar o apoio ao cliente?", a: "Utilize o formulário de contacto. Note que atualmente não há número de telefone ou e-mail público disponível." },
+    ],
+    contactTitle: "Contacto",
+    contactDescription: "Envie-nos uma mensagem. Entraremos em contacto consigo.",
+    nameLabel: "Nome",
+    emailLabel: "E-mail",
+    messageLabel: "Mensagem",
+    sendButton: "Enviar mensagem",
+    contactNote: "Por favor, não indique dados financeiros sensíveis no formulário de contacto.",
+  },
+};
+
+export function getPageDictionary(lang: Locale) {
+  return pageDictionaries[lang];
+}
+
+export { getDictionary };
