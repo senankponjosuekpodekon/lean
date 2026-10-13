@@ -33,10 +33,10 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
   ];
 
   const solutions = [
-    { key: "personal", label: t.personalProject, desc: t.personalProjectDesc, image: "/images/project-personal.svg" },
-    { key: "vehicle", label: t.vehicle, desc: t.vehicleDesc, image: "/images/project-vehicle.svg" },
-    { key: "renovation", label: t.renovation, desc: t.renovationDesc, image: "/images/project-renovation.svg" },
-    { key: "business", label: t.business, desc: t.businessDesc, image: "/images/project-business.svg" },
+    { key: "personal", label: t.personalProject, desc: t.personalProjectDesc, image: "/images/project-personal.jpg" },
+    { key: "vehicle", label: t.vehicle, desc: t.vehicleDesc, image: "/images/project-vehicle.jpg" },
+    { key: "renovation", label: t.renovation, desc: t.renovationDesc, image: "/images/project-renovation.jpg" },
+    { key: "business", label: t.business, desc: t.businessDesc, image: "/images/project-business.jpg" },
   ];
 
   const steps = [
