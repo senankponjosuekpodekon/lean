@@ -57,7 +57,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
       {/* Hero */}
       <section className="relative max-w-7xl mx-auto px-5 lg:px-12 pt-12 lg:pt-20 pb-8 w-full animate-fade-in-up">
         <div className="absolute right-0 top-0 -z-10 opacity-40 pointer-events-none hidden lg:block">
-          <img src="/hero-illustration.svg" alt="" width="400" height="267" className="opacity-60" />
+          <img src="/hero-illustration.svg" alt="" aria-hidden="true" width="400" height="267" className="opacity-60" />
         </div>
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="flex flex-col gap-6">
@@ -136,7 +136,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
             <Card key={s.title} className={`relative p-6 animate-fade-in-up stagger-${i + 1}`}>
               <span className="absolute top-4 right-4 font-heading text-4xl font-bold text-accent/20">{String(i + 1).padStart(2, "0")}</span>
               <div className="w-12 h-12 rounded-xl bg-accent-secondary/50 flex items-center justify-center mb-4">
-                <img src={s.icon} alt="" width="28" height="28" className="opacity-90" />
+                <img src={s.icon} alt={s.title} width="28" height="28" className="opacity-90" />
               </div>
               <h3 className="font-heading text-lg font-bold text-primary mb-2">{s.title}</h3>
               <p className="text-text-secondary text-sm leading-relaxed">{s.desc}</p>
