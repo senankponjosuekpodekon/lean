@@ -32,8 +32,8 @@ export function Input({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
-        className={`h-12 px-4 rounded-xl border bg-surface text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent ${
-          error ? "border-error" : "border-border"
+        className={`h-12 px-4 rounded-2xl border bg-surface text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all ${
+          error ? "border-error" : "border-border hover:border-primary/30"
         }`}
       />
       {error && <p className="text-sm text-error">{error}</p>}
