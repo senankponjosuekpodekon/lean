@@ -33,10 +33,10 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
   ];
 
   const solutions = [
-    { key: "personal", label: t.personalProject, desc: "Freizeit, Bildung, Mobilität oder sonstige Ausgaben", icon: "/icons/icon-personal.svg" },
-    { key: "vehicle", label: t.vehicle, desc: "Gebraucht- oder Neufahrzeug, je nach Produktverfügbarkeit", icon: "/icons/icon-vehicle.svg" },
-    { key: "renovation", label: t.renovation, desc: "Wohnraum- und Sanierungsvorhaben", icon: "/icons/icon-renovation.svg" },
-    { key: "business", label: t.business, desc: "Investitionen oder Betriebsmittel für selbstständige Tätigkeiten", icon: "/icons/icon-business.svg" },
+    { key: "personal", label: t.personalProject, desc: t.personalProjectDesc, icon: "/icons/icon-personal.svg" },
+    { key: "vehicle", label: t.vehicle, desc: t.vehicleDesc, icon: "/icons/icon-vehicle.svg" },
+    { key: "renovation", label: t.renovation, desc: t.renovationDesc, icon: "/icons/icon-renovation.svg" },
+    { key: "business", label: t.business, desc: t.businessDesc, icon: "/icons/icon-business.svg" },
   ];
 
   const steps = [
@@ -112,9 +112,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
       <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full animate-fade-in-up">
         <div className="text-center mb-10">
           <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">{t.whichProject}</h2>
-          <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">
-            Wählen Sie den passenden Verwendungszweck und erhalten Sie eine erste, unverbindliche Einschätzung.
-          </p>
+          <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">{t.solutionsSubtitle}</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {solutions.map((s, i) => (
@@ -133,9 +131,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
       <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full animate-fade-in-up">
         <div className="text-center mb-10">
           <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">{t.howItWorksTitle}</h2>
-          <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">
-            Von der ersten Berechnung bis zur Rückmeldung: ein klarer, nachvollziehbarer Prozess.
-          </p>
+          <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">{t.stepsSubtitle}</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((s, i) => (
