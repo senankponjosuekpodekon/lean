@@ -33,10 +33,10 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
   ];
 
   const solutions = [
-    { key: "personal", label: t.personalProject, desc: t.personalProjectDesc, image: "/images/project-personal.jpg" },
-    { key: "vehicle", label: t.vehicle, desc: t.vehicleDesc, image: "/images/project-vehicle.jpg" },
-    { key: "renovation", label: t.renovation, desc: t.renovationDesc, image: "/images/project-renovation.jpg" },
-    { key: "business", label: t.business, desc: t.businessDesc, image: "/images/project-business.jpg" },
+    { key: "personal", label: t.personalProject, desc: t.personalProjectDesc, image: "/images/pexels-silverkblack-39219845.jpg" },
+    { key: "vehicle", label: t.vehicle, desc: t.vehicleDesc, image: "/images/pexels-omar-ramadan-1739260-25857424.jpg" },
+    { key: "renovation", label: t.renovation, desc: t.renovationDesc, image: "/images/pexels-valentin-ivantsov-2154772556-36035072.jpg" },
+    { key: "business", label: t.business, desc: t.businessDesc, image: "/images/pexels-silverkblack-39205088.jpg" },
   ];
 
   const steps = [
