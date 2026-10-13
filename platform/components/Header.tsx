@@ -7,7 +7,7 @@ import { Button } from "./ui/Button";
 const navLinks = [
   { href: "/de/finanzierung", label: "Finanzierung" },
   { href: "/de/kreditrechner", label: "Kreditrechner" },
-  { href: "/de/ablauf", label: "Ablauf" },
+  { href: "/de/so-funktioniert-es", label: "So funktioniert's" },
   { href: "/de/faq", label: "FAQ" },
   { href: "/de/kontakt", label: "Kontakt" },
 ];
@@ -22,7 +22,6 @@ export function Header() {
           Finanzierung.DE
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
@@ -37,11 +36,10 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           <span className="text-sm text-text-secondary hidden sm:inline">DE</span>
-          <Button href="/de/antrag" variant="primary" className="hidden sm:flex h-10 px-4 text-sm">
-            Kredit beantragen
+          <Button href="/de/kreditrechner" variant="primary" className="hidden sm:flex h-10 px-4 text-sm">
+            Kredit berechnen
           </Button>
 
-          {/* Mobile menu button */}
           <button
             onClick={() => setOpen(!open)}
             aria-label={open ? "Menü schließen" : "Menü öffnen"}
@@ -58,7 +56,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {open && (
         <div className="md:hidden border-t border-border bg-surface">
           <nav className="flex flex-col px-5 py-4 gap-2">
@@ -72,8 +69,8 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Button href="/de/antrag" variant="primary" className="mt-4 h-12">
-              Kredit beantragen
+            <Button href="/de/kreditrechner" variant="primary" className="mt-4 h-12">
+              Kredit berechnen
             </Button>
           </nav>
         </div>

@@ -7,6 +7,7 @@ interface InputProps {
   placeholder?: string;
   required?: boolean;
   error?: string;
+  helpText?: string;
 }
 
 export function Input({
@@ -18,6 +19,7 @@ export function Input({
   placeholder,
   required = false,
   error,
+  helpText,
 }: InputProps) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -32,10 +34,11 @@ export function Input({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         required={required}
-        className={`h-12 px-4 rounded-2xl border bg-surface text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-accent/50 transition-all ${
-          error ? "border-error" : "border-border hover:border-primary/30"
+        className={`h-12 px-4 rounded-lg border bg-surface text-text placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary/30 transition-colors ${
+          error ? "border-error" : "border-border"
         }`}
       />
+      {helpText && <p className="text-xs text-text-secondary">{helpText}</p>}
       {error && <p className="text-sm text-error">{error}</p>}
     </div>
   );

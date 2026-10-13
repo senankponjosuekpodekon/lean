@@ -1,196 +1,117 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { LOAN_CONFIG, formatCurrency } from "@/lib/loan";
+import { LOAN_CONFIG, calculateLoan, formatCurrency } from "@/lib/loan";
 
-const benefits = [
-  {
-    title: "Transparente Konditionen",
-    description: "Zinssatz, Laufzeit und Gesamtkosten werden klar ausgewiesen — ohne versteckte Gebühren.",
-  },
-  {
-    title: "Schnelle unverbindliche Anfrage",
-    description: "In wenigen Minuten online. Sie erhalten eine Rückmeldung nach Prüfung Ihrer Angaben.",
-  },
-  {
-    title: "Flexibel planen",
-    description: "Beträge und Laufzeiten anpassen, bevor Sie eine Anfrage stellen.",
-  },
+const example = calculateLoan({
+  amountCents: LOAN_CONFIG.defaultAmountCents,
+  annualRatePercent: LOAN_CONFIG.annualRatePercent,
+  termMonths: LOAN_CONFIG.defaultTerm,
+  feesCents: 0,
+});
+
+const transparency = [
+  { title: "Conditions claires", desc: "Zinssatz, Laufzeit und Gesamtkosten werden vor einer Anfrage offengelegt." },
+  { title: "Coût estimé", desc: "Der Rechner zeigt eine unverbindliche Schätzung auf Basis der eingegebenen Werte." },
+  { title: "Données protégées", desc: "Persönliche Angaben werden verschlüsselt übertragen und nur an zuständige Prüfer weitergegeben." },
 ];
 
-const offers = [
-  {
-    title: "Ratenkredit",
-    amount: `ab ${formatCurrency(LOAN_CONFIG.minAmountCents)}`,
-    term: "12 – 120 Monate",
-    rate: `${LOAN_CONFIG.annualRatePercent} % p.a. (nominal, konfigurierbar)`,
-    cta: "Jetzt berechnen",
-    href: "/de/kreditrechner",
-  },
-  {
-    title: "Fahrzeugfinanzierung",
-    amount: "Für Gebraucht- und Neufahrzeuge",
-    term: "Individuelle Laufzeit",
-    rate: "Konditionen nach Prüfung",
-    cta: "Anfrage starten",
-    href: "/de/antrag",
-  },
-  {
-    title: "Renovierungskredit",
-    amount: "Für Wohnraum- und Sanierungsvorhaben",
-    term: "Individuelle Laufzeit",
-    rate: "Konditionen nach Prüfung",
-    cta: "Anfrage starten",
-    href: "/de/antrag",
-  },
+const solutions = [
+  { label: "Persönliches Projekt", desc: "Freizeit, Bildung, Mobilität oder sonstige Ausgaben" },
+  { label: "Fahrzeug", desc: "Gebraucht- oder Neufahrzeug, je nach Produktverfügbarkeit" },
+  { label: "Renovierung", desc: "Wohnraum- und Sanierungsvorhaben" },
+  { label: "Berufliche Aktivität", desc: "Investitionen oder Betriebsmittel für selbstständige Tätigkeiten" },
 ];
 
-const trust = [
-  { label: "Online-Anfrage", value: "24/7 möglich" },
-  { label: "Voraussichtliche Laufzeit", value: "12 – 120 Monate" },
-  { label: "Datenschutz", value: "Sichere Übermittlung" },
+const steps = [
+  { title: "Simulation", desc: "Berechnen Sie eine unverbindliche Monatsrate." },
+  { title: "Demande", desc: "Senden Sie Ihre Anfrage über das Online-Formular." },
+  { title: "Vérification", desc: "Ihre Angaben und ggf. Unterlagen werden geprüft." },
+  { title: "Proposition", desc: "Bei Akzeptanz erhalten Sie die Konditionsinformationen." },
 ];
 
 const faq = [
-  {
-    q: "Ist die Berechnung verbindlich?",
-    a: "Nein. Der Kreditrechner zeigt eine unverbindliche Schätzung. Maßgebend sind die tatsächlichen Konditionen nach Prüfung.",
-  },
-  {
-    q: "Wie schnell erhalte ich eine Rückmeldung?",
-    a: "Die Bearbeitungsdauer hängt vom Produkt und der Vollständigkeit Ihrer Angaben ab.",
-  },
-  {
-    q: "Ist eine Zusage garantiert?",
-    a: "Nein. Jede Anfrage wird individuell geprüft. Eine Finanzierung erfolgt nur nach Annahme durch den Kreditgeber.",
-  },
+  { q: "Ist die Berechnung verbindlich?", a: "Nein. Der Rechner zeigt eine unverbindliche Schätzung. Maßgebend sind die tatsächlichen Konditionen nach Prüfung." },
+  { q: "Gibt es eine Zusagegarantie?", a: "Nein. Jede Anfrage wird individuell geprüft. Eine Finanzierung erfolgt nur nach Annahme durch den Kreditgeber." },
+  { q: "Welche Dokumente werden benötigt?", a: "Je nach Produkt und individueller Situation können Einkommensnachweise, Identitätsnachweise oder weitere Unterlagen angefordert werden." },
 ];
 
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-20 lg:gap-28">
       {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5 pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto px-5 lg:px-12 pt-16 lg:pt-28 pb-20">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div className="flex flex-col gap-8">
-              <span className="inline-flex self-start items-center px-4 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-bold tracking-wide">
-                FINANZIERUNG ONLINE ANFRAGEN
-              </span>
-              <h1 className="font-heading text-4xl lg:text-6xl font-bold text-primary leading-[1.1]">
-                Ihr Vorhaben. Unsere Finanzierung. Klar berechnet.
-              </h1>
-              <p className="text-lg lg:text-xl text-text-secondary max-w-xl leading-relaxed">
-                Berechnen Sie in wenigen Sekunden eine mögliche Monatsrate und stellen Sie Ihre Anfrage bequem online — unverbindlich und transparent.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button href="/de/kreditrechner" className="h-14 px-8 text-base">
-                  Monatsrate berechnen
-                </Button>
-                <Button href="/de/antrag" variant="outline" className="h-14 px-8 text-base">
-                  Finanzierung anfragen
-                </Button>
-              </div>
-              <p className="text-sm text-text-secondary">
-                Eine Anfrage ist unverbindlich. Eine Finanzierung erfolgt nur nach Prüfung und Annahme durch den zuständigen Kreditgeber.
-              </p>
+      <section className="max-w-7xl mx-auto px-5 lg:px-12 pt-12 lg:pt-20 pb-8 w-full">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="flex flex-col gap-6">
+            <h1 className="font-heading text-4xl lg:text-6xl font-bold text-primary leading-[1.1]">
+              Finanzierung, klar und transparent.
+            </h1>
+            <p className="text-lg lg:text-xl text-text-secondary max-w-xl leading-relaxed">
+              Informieren Sie sich, berechnen Sie eine mögliche Monatsrate und stellen Sie Ihre Anfrage — ohne versteckte Versprechen.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button href="/de/kreditrechner">Kredit berechnen</Button>
+              <Button href="/de/so-funktioniert-es" variant="outline">So funktioniert's</Button>
             </div>
+          </div>
 
-            <Card className="bg-surface border-border shadow-lg p-8 lg:p-10">
-              <div className="flex flex-col gap-6">
-                <p className="font-heading text-2xl font-bold text-primary">Beispielrechnung</p>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="p-3 rounded-lg bg-background">
-                    <p className="text-text-secondary">Kreditbetrag</p>
-                    <p className="font-semibold text-text">10.000 €</p>
-                  </div>
-                  <div className="p-3 rounded-lg bg-background">
-                    <p className="text-text-secondary">Laufzeit</p>
-                    <p className="font-semibold text-text">60 Monate</p>
-                  </div>
-                  <div className="p-3 rounded-lg bg-background">
-                    <p className="text-text-secondary">Nominalzins</p>
-                    <p className="font-semibold text-text">3 % p.a.</p>
-                  </div>
-                  <div className="p-3 rounded-lg bg-background">
-                    <p className="text-text-secondary">Mögliche Rate</p>
-                    <p className="font-semibold text-text">~179,69 €</p>
-                  </div>
-                </div>
-                <p className="text-xs text-text-secondary">
-                  Diese Werte dienen als Beispiel. Konfigurierbare Werte müssen vor Veröffentlichung bestätigt werden.
-                </p>
+          <Card className="p-8">
+            <p className="text-xs font-semibold text-text-secondary uppercase tracking-wide">Simulation indicative</p>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="p-3 rounded-lg bg-background">
+                <p className="text-sm text-text-secondary">Montant souhaité</p>
+                <p className="font-semibold text-text">{formatCurrency(LOAN_CONFIG.defaultAmountCents)}</p>
               </div>
-            </Card>
-          </div>
-
-          {/* Trust bar */}
-          <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {trust.map((t) => (
-              <Card key={t.label} className="text-center py-5">
-                <p className="text-sm text-text-secondary">{t.label}</p>
-                <p className="font-heading text-lg font-bold text-primary mt-1">{t.value}</p>
-              </Card>
-            ))}
-          </div>
+              <div className="p-3 rounded-lg bg-background">
+                <p className="text-sm text-text-secondary">Durée</p>
+                <p className="font-semibold text-text">{LOAN_CONFIG.defaultTerm} mois</p>
+              </div>
+              <div className="p-3 rounded-lg bg-background col-span-2">
+                <p className="text-sm text-text-secondary">Mensualité estimée</p>
+                <p className="font-heading text-2xl font-bold text-primary">{formatCurrency(example.monthlyPaymentCents)}</p>
+              </div>
+            </div>
+            <p className="mt-4 text-xs text-text-secondary">
+              Exemple théorique à {LOAN_CONFIG.annualRatePercent} % nominal annuel, hors frais. À confirmer selon les conditions réelles.
+            </p>
+          </Card>
         </div>
       </section>
 
-      {/* Offers */}
+      {/* Transparence */}
       <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full">
-        <div className="text-center mb-12">
-          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">Finanzierungslösungen im Überblick</h2>
-          <p className="mt-4 text-lg text-text-secondary">Wählen Sie die passende Sparte — oder stellen Sie direkt eine individuelle Anfrage.</p>
-        </div>
         <div className="grid md:grid-cols-3 gap-6">
-          {offers.map((offer) => (
-            <Card key={offer.title} className="flex flex-col gap-5 p-8 border-border hover:shadow-lg transition-shadow">
-              <h3 className="font-heading text-2xl font-bold text-primary">{offer.title}</h3>
-              <ul className="space-y-2 text-text-secondary">
-                <li>{offer.amount}</li>
-                <li>Laufzeit: {offer.term}</li>
-                <li>Zins: {offer.rate}</li>
-              </ul>
-              <Button href={offer.href} variant={offer.href === "/de/kreditrechner" ? "primary" : "outline"} className="mt-auto">
-                {offer.cta}
-              </Button>
+          {transparency.map((t) => (
+            <Card key={t.title} className="p-6">
+              <h2 className="font-heading text-lg font-bold text-primary mb-2">{t.title}</h2>
+              <p className="text-text-secondary text-sm">{t.desc}</p>
             </Card>
           ))}
         </div>
       </section>
 
-      {/* Benefits */}
+      {/* Solutions */}
       <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full">
-        <div className="text-center mb-12">
-          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">Warum diese Plattform?</h2>
-          <p className="mt-4 text-lg text-text-secondary">Klarheit, Geschwindigkeit und Schutz Ihrer Daten stehen an erster Stelle.</p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {benefits.map((b) => (
-            <Card key={b.title} className="p-8">
-              <h3 className="font-heading text-xl font-bold text-primary mb-3">{b.title}</h3>
-              <p className="text-text-secondary leading-relaxed">{b.description}</p>
+        <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary text-center">Welches Projekt planen Sie?</h2>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {solutions.map((s) => (
+            <Card key={s.label} className="px-6 py-4">
+              <p className="font-semibold text-primary">{s.label}</p>
+              <p className="text-sm text-text-secondary">{s.desc}</p>
             </Card>
           ))}
         </div>
       </section>
 
-      {/* Process */}
+      {/* Étapes */}
       <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full">
-        <div className="text-center mb-12">
-          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">In drei Schritten zur Anfrage</h2>
-        </div>
-        <div className="grid sm:grid-cols-3 gap-6">
-          {[
-            { step: "01", title: "Berechnen", desc: "Passen Sie Betrag und Laufzeit an." },
-            { step: "02", title: "Anfragen", desc: "Füllen Sie das Formular in wenigen Minuten aus." },
-            { step: "03", title: "Entscheidung", desc: "Erhalten Sie nach Prüfung eine Rückmeldung." },
-          ].map((s) => (
-            <Card key={s.step} className="relative p-8">
-              <span className="absolute top-4 right-4 font-heading text-5xl font-bold text-accent/10">{s.step}</span>
-              <h3 className="font-heading text-xl font-bold text-primary mb-2">{s.title}</h3>
-              <p className="text-text-secondary">{s.desc}</p>
+        <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary text-center">So funktioniert die Anfrage</h2>
+        <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {steps.map((s, i) => (
+            <Card key={s.title} className="relative p-6">
+              <span className="absolute top-4 right-4 font-heading text-4xl font-bold text-accent/20">{String(i + 1).padStart(2, "0")}</span>
+              <h3 className="font-heading text-lg font-bold text-primary mb-2">{s.title}</h3>
+              <p className="text-text-secondary text-sm">{s.desc}</p>
             </Card>
           ))}
         </div>
@@ -198,10 +119,8 @@ export default function HomePage() {
 
       {/* FAQ */}
       <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full">
-        <div className="text-center mb-12">
-          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">Häufige Fragen</h2>
-        </div>
-        <div className="max-w-3xl mx-auto space-y-4">
+        <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary text-center">Häufige Fragen</h2>
+        <div className="mt-8 max-w-3xl mx-auto space-y-4">
           {faq.map((item) => (
             <Card key={item.q} className="p-6">
               <h3 className="font-heading text-lg font-semibold text-primary">{item.q}</h3>
@@ -211,20 +130,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* CTA */}
       <section className="max-w-7xl mx-auto px-5 lg:px-12 pb-20 w-full">
-        <Card className="text-center bg-gradient-to-br from-primary/5 to-accent/5 border-primary/10 p-10 lg:p-16">
-          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">Bereit, Ihr Vorhaben zu planen?</h2>
+        <Card className="text-center p-10 lg:p-16 bg-accent-secondary/30 border-primary/10">
+          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">Bereit, Ihre Finanzierung zu planen?</h2>
           <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">
-            Berechnen Sie zunächst eine unverbindliche Monatsrate und prüfen Sie, welche Finanzierung zu Ihrer Situation passt.
+            Berechnen Sie zunächst eine unverbindliche Monatsrate und prüfen Sie, welche Option zu Ihrer Situation passt.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-            <Button href="/de/kreditrechner" className="h-14 px-8 text-base">
-              Monatsrate berechnen
-            </Button>
-            <Button href="/de/antrag" variant="outline" className="h-14 px-8 text-base">
-              Anfrage starten
-            </Button>
+            <Button href="/de/kreditrechner">Kredit berechnen</Button>
+            <Button href="/de/antrag" variant="outline">Anfrage starten</Button>
           </div>
         </Card>
       </section>
