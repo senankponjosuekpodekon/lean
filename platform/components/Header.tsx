@@ -27,8 +27,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 bg-surface/90 backdrop-blur border-b border-border">
       <div className="max-w-7xl mx-auto px-5 lg:px-12 h-16 flex items-center justify-between">
-        <Link href={localPath("/de", lang)} className="font-heading font-bold text-lg sm:text-xl text-primary">
-          Velmora
+        <Link href={localPath("/de", lang)} className="flex items-center">
+          <img src="/images/velmora-logo.png" alt="Velmora" className="h-8 sm:h-10 w-auto" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
