@@ -27,7 +27,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 bg-surface/90 backdrop-blur border-b border-border">
       <div className="max-w-7xl mx-auto px-5 lg:px-12 h-16 flex items-center justify-between">
-        <Link href={localPath("/de", lang)} className="font-heading font-bold text-xl text-primary">
+        <Link href={localPath("/de", lang)} className="font-heading font-bold text-lg sm:text-xl text-primary">
           Velmora
         </Link>
 
@@ -43,9 +43,9 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <select
-            aria-label="Sprache"
+            aria-label="Language"
             value={lang}
             onChange={(e) => {
               const newLang = e.target.value;
@@ -53,7 +53,7 @@ export function Header() {
               const newPath = currentPath.replace(/^\/(de|fr|es|it|pt)/, `/${newLang}`);
               window.location.href = newPath;
             }}
-            className="h-9 px-2 rounded-lg border border-border bg-surface text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary/30"
+            className="h-8 sm:h-9 px-1 sm:px-2 rounded-lg border border-border bg-surface text-xs sm:text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary/30 w-14 sm:w-auto"
           >
             {locales.map((l) => (
               <option key={l} value={l}>{l.toUpperCase()}</option>
@@ -66,9 +66,9 @@ export function Header() {
           <button
             onClick={() => setOpen(!open)}
             aria-label={open ? "Menü schließen" : "Menü öffnen"}
-            className="md:hidden p-2 rounded-lg text-primary hover:bg-primary/5"
+            className="md:hidden p-1.5 sm:p-2 rounded-lg text-primary hover:bg-primary/5"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {open ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -80,7 +80,7 @@ export function Header() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-border bg-surface animate-fade-in">
+        <div className="md:hidden border-t border-border bg-surface shadow-lg animate-fade-in">
           <nav className="flex flex-col px-5 py-4 gap-2">
             {navLinks.map((link) => (
               <Link
