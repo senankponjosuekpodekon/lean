@@ -33,17 +33,17 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
   ];
 
   const solutions = [
-    { label: t.personalProject, desc: "Freizeit, Bildung, Mobilität oder sonstige Ausgaben" },
-    { label: t.vehicle, desc: "Gebraucht- oder Neufahrzeug, je nach Produktverfügbarkeit" },
-    { label: t.renovation, desc: "Wohnraum- und Sanierungsvorhaben" },
-    { label: t.business, desc: "Investitionen oder Betriebsmittel für selbstständige Tätigkeiten" },
+    { key: "personal", label: t.personalProject, desc: "Freizeit, Bildung, Mobilität oder sonstige Ausgaben", icon: "/icons/icon-personal.svg" },
+    { key: "vehicle", label: t.vehicle, desc: "Gebraucht- oder Neufahrzeug, je nach Produktverfügbarkeit", icon: "/icons/icon-vehicle.svg" },
+    { key: "renovation", label: t.renovation, desc: "Wohnraum- und Sanierungsvorhaben", icon: "/icons/icon-renovation.svg" },
+    { key: "business", label: t.business, desc: "Investitionen oder Betriebsmittel für selbstständige Tätigkeiten", icon: "/icons/icon-business.svg" },
   ];
 
   const steps = [
-    { title: t.stepSimulation, desc: t.stepSimulationDesc },
-    { title: t.stepRequest, desc: t.stepRequestDesc },
-    { title: t.stepVerification, desc: t.stepVerificationDesc },
-    { title: t.stepProposal, desc: t.stepProposalDesc },
+    { title: t.stepSimulation, desc: t.stepSimulationDesc, icon: "/icons/icon-simulation.svg" },
+    { title: t.stepRequest, desc: t.stepRequestDesc, icon: "/icons/icon-request.svg" },
+    { title: t.stepVerification, desc: t.stepVerificationDesc, icon: "/icons/icon-verification.svg" },
+    { title: t.stepProposal, desc: t.stepProposalDesc, icon: "/icons/icon-proposal.svg" },
   ];
 
   const faq = [
@@ -110,12 +110,20 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
 
       {/* Solutions */}
       <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full animate-fade-in-up">
-        <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary text-center">{t.whichProject}</h2>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <div className="text-center mb-10">
+          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">{t.whichProject}</h2>
+          <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">
+            Wählen Sie den passenden Verwendungszweck und erhalten Sie eine erste, unverbindliche Einschätzung.
+          </p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {solutions.map((s, i) => (
-            <Card key={s.label} className={`px-6 py-4 hover:shadow-md transition-shadow animate-fade-in-up stagger-${i + 1}`}>
-              <p className="font-semibold text-primary">{s.label}</p>
-              <p className="text-sm text-text-secondary">{s.desc}</p>
+            <Card key={s.key} className={`flex flex-col items-center text-center p-8 hover:shadow-md transition-shadow animate-fade-in-up stagger-${i + 1}`}>
+              <div className="w-16 h-16 rounded-2xl bg-accent-secondary/50 flex items-center justify-center mb-5">
+                <img src={s.icon} alt="" width="40" height="40" className="opacity-90" />
+              </div>
+              <h3 className="font-heading text-xl font-bold text-primary mb-2">{s.label}</h3>
+              <p className="text-text-secondary text-sm leading-relaxed">{s.desc}</p>
             </Card>
           ))}
         </div>
@@ -123,13 +131,21 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
 
       {/* Étapes */}
       <section className="max-w-7xl mx-auto px-5 lg:px-12 w-full animate-fade-in-up">
-        <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary text-center">{t.howItWorksTitle}</h2>
-        <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="text-center mb-10">
+          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">{t.howItWorksTitle}</h2>
+          <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">
+            Von der ersten Berechnung bis zur Rückmeldung: ein klarer, nachvollziehbarer Prozess.
+          </p>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((s, i) => (
             <Card key={s.title} className={`relative p-6 animate-fade-in-up stagger-${i + 1}`}>
               <span className="absolute top-4 right-4 font-heading text-4xl font-bold text-accent/20">{String(i + 1).padStart(2, "0")}</span>
+              <div className="w-12 h-12 rounded-xl bg-accent-secondary/50 flex items-center justify-center mb-4">
+                <img src={s.icon} alt="" width="28" height="28" className="opacity-90" />
+              </div>
               <h3 className="font-heading text-lg font-bold text-primary mb-2">{s.title}</h3>
-              <p className="text-text-secondary text-sm">{s.desc}</p>
+              <p className="text-text-secondary text-sm leading-relaxed">{s.desc}</p>
             </Card>
           ))}
         </div>
