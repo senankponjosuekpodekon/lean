@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createApplication, listApplications, updateStatus, type Application } from "@/lib/db";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function POST(request: Request) {
   try {
@@ -18,11 +19,17 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  return NextResponse.json(listApplications());
+  try {
+    await requireAdmin();
+    return NextResponse.json(listApplications());
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 }
 
 export async function PATCH(request: Request) {
   try {
+    await requireAdmin();
     const { reference, status, statusLabel } = await request.json();
     if (!reference || !status) {
       return NextResponse.json({ error: "Missing reference or status" }, { status: 400 });
@@ -32,7 +39,10 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "Application not found" }, { status: 404 });
     }
     return NextResponse.json(updated);
-  } catch {
+  } catch (error) {
+    if ((error as Error).message === "Unauthorized") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 }
