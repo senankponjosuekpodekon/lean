@@ -18,8 +18,44 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Velmora — Financing, made clearer",
-  description: "Informieren Sie sich über Finanzierungsmöglichkeiten, berechnen Sie eine unverbindliche Monatsrate und stellen Sie Ihre Anfrage online.",
+  title: {
+    default: "Velmora — Financing, made clearer",
+    template: "%s | Velmora",
+  },
+  description:
+    "Velmora macht Finanzierung übersichtlicher. Informieren Sie sich, berechnen Sie eine unverbindliche Monatsrate und stellen Sie Ihre Anfrage online.",
+  metadataBase: new URL("https://velmora-finanz.de"),
+  alternates: {
+    canonical: "/",
+    languages: {
+      de: "/de",
+      fr: "/fr",
+      es: "/es",
+      it: "/it",
+      pt: "/pt",
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    url: "https://velmora-finanz.de",
+    siteName: "Velmora",
+    title: "Velmora — Financing, made clearer",
+    description:
+      "Finanzierung transparent vergleichen und unverbindlich anfragen.",
+    images: ["/images/velmora-logo.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Velmora — Financing, made clearer",
+    description:
+      "Finanzierung transparent vergleichen und unverbindlich anfragen.",
+    images: ["/images/velmora-logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
