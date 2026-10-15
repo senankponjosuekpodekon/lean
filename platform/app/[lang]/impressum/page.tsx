@@ -9,13 +9,14 @@ export default function ImpressumPage() {
       <Card className="max-w-3xl mx-auto space-y-6">
         <div>
           <h2 className="font-heading text-xl font-semibold text-primary">Verantwortlich</h2>
-          <p className="mt-2 text-text-secondary">Beispielmarke (Name noch zu definieren)</p>
+          <p className="mt-2 text-text-secondary">Velmora Finanz</p>
           <p className="text-text-secondary">Adresse und Rechtsform müssen vor Veröffentlichung eingetragen werden.</p>
         </div>
 
         <div>
           <h2 className="font-heading text-xl font-semibold text-primary">Kontakt</h2>
-          <p className="mt-2 text-text-secondary">E-Mail, Telefon und Postanschrift werden noch hinterlegt.</p>
+          <p className="mt-2 text-text-secondary">E-Mail: kontakt@velmora-finanz.de</p>
+          <p className="text-text-secondary">Web: velmora-finanz.de</p>
         </div>
 
         <div>
