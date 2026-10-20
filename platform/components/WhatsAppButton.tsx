@@ -14,16 +14,16 @@ export function WhatsAppButton() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/settings")
+    fetch("/api/settings", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (!cancelled && data?.whatsappEnabled) setHref(whatsAppLink(data.whatsappNumber));
+        if (!cancelled) setHref(data?.whatsappEnabled ? whatsAppLink(data.whatsappNumber) : null);
       })
       .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [pathname]);
 
   if (!href || pathname?.startsWith("/admin")) return null;
 
