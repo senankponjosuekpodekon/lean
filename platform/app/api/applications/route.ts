@@ -1,6 +1,9 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { createApplication, listApplications, updateStatus, type Application, type ApplicationDetails } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin-auth";
+import { applicationEmails } from "@/lib/emails";
+import { defaultLocale, isLocale } from "@/lib/i18n";
+import { sendMails } from "@/lib/mailer";
 
 const STATUSES: Application["status"][] = ["received", "reviewing", "missing_info", "in_analysis", "decision_communicated", "closed"];
 const DETAIL_FIELDS = ["description", "birthDate", "street", "zip", "city", "status", "occupation", "employer", "tenure", "income", "expenses", "existingLoans"];
@@ -48,6 +51,9 @@ export async function POST(request: Request) {
       phone: phone as string,
       details,
     });
+    const lang = typeof body.lang === "string" && isLocale(body.lang) ? body.lang : defaultLocale;
+    const adminUrl = `${process.env.SITE_URL || new URL(request.url).origin}/admin`;
+    after(() => sendMails(applicationEmails(app, lang, adminUrl, process.env.NOTIFY_EMAIL)));
     return NextResponse.json({ reference: app.reference, status: app.status, createdAt: app.createdAt }, { status: 201 });
   } catch (error) {
     console.error("createApplication failed:", error);

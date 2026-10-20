@@ -154,6 +154,7 @@ function AntragInner() {
           expenses,
           existingLoans,
           documents: selectedDocs,
+          lang,
         }),
       });
       const data = await res.json();

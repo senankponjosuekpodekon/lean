@@ -1,6 +1,9 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { createContactMessage, listContactMessages, setContactMessageHandled } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin-auth";
+import { contactEmails } from "@/lib/emails";
+import { defaultLocale, isLocale } from "@/lib/i18n";
+import { sendMails } from "@/lib/mailer";
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
@@ -19,6 +22,9 @@ export async function POST(request: Request) {
   }
   try {
     const saved = await createContactMessage({ name: name.trim(), email: email.trim(), message: message.trim() });
+    const lang = typeof body.lang === "string" && isLocale(body.lang) ? body.lang : defaultLocale;
+    const adminUrl = `${process.env.SITE_URL || new URL(request.url).origin}/admin`;
+    after(() => sendMails(contactEmails(saved, lang, adminUrl, process.env.NOTIFY_EMAIL)));
     return NextResponse.json({ id: saved.id }, { status: 201 });
   } catch (error) {
     console.error("createContactMessage failed:", error);
