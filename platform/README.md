@@ -45,6 +45,21 @@ export const LOAN_CONFIG = {
 
 **Ces valeurs sont des hypothèses de démonstration.** Elles doivent être confirmées avant publication.
 
+## Variables d'environnement
+
+| Variable | Rôle |
+| --- | --- |
+| `POSTGRES_URL` (ou `PRISMA_DATABASE_URL`) | Connexion PostgreSQL (tables créées automatiquement) |
+| `ADMIN_PASSWORD` | Mot de passe de `/admin` — **obligatoire en production** |
+| `ADMIN_SESSION_SECRET` | Clé de signature de la session admin — **obligatoire en production** |
+| `MAIL_FROM` | Expéditeur des e-mails, ex. `Velmora <contact@velmora-finanz.de>` |
+| `NOTIFY_EMAIL` | Adresse pro qui reçoit chaque nouvelle demande / message |
+| `RESEND_API_KEY` | Option 1 : envoi via [Resend](https://resend.com) (domaine vérifié requis) |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_SECURE` | Option 2 : envoi via le SMTP de la messagerie pro (port 587 par défaut, 465 = TLS) |
+| `SITE_URL` | URL publique utilisée dans le lien vers l'admin (sinon l'origine de la requête) |
+
+Sans `MAIL_FROM` et un fournisseur (Resend ou SMTP), aucun e-mail n'est envoyé ; les formulaires restent enregistrés et visibles dans `/admin`. Si les deux sont configurés, Resend est utilisé.
+
 ## Calculateur
 
 La formule utilisée est celle du prêt amortissable à mensualités constantes :

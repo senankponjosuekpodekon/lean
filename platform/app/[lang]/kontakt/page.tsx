@@ -19,6 +19,8 @@ export default function KontaktPage() {
 
 function KontaktInner() {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -27,9 +29,23 @@ function KontaktInner() {
   const lang = (params?.lang as Locale) || "de";
   const t = getPageDictionary(lang);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    setSending(true);
+    setError(false);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message, lang }),
+      });
+      if (res.ok) setSent(true);
+      else setError(true);
+    } catch {
+      setError(true);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -39,7 +55,7 @@ function KontaktInner() {
       <div className="max-w-2xl mx-auto">
         {sent ? (
           <Card className="bg-success/5 border-success/20 text-center">
-            <h2 className="font-heading text-2xl font-bold text-success">{t.sendButton}</h2>
+            <h2 className="font-heading text-2xl font-bold text-success">{t.contactSuccess}</h2>
             <p className="mt-2 text-text-secondary">{t.contactNote}</p>
           </Card>
         ) : (
@@ -60,7 +76,8 @@ function KontaktInner() {
                 />
               </div>
               <p className="text-xs text-text-secondary">{t.contactNote}</p>
-              <Button type="submit" className="w-full">{t.sendButton}</Button>
+              {error && <p role="alert" className="text-sm text-error">{t.contactError}</p>}
+              <Button type="submit" className="w-full" disabled={sending}>{t.sendButton}</Button>
             </form>
           </Card>
         )}

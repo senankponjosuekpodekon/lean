@@ -1,6 +1,6 @@
 import { getDictionary, type Locale } from "./i18n";
 
-const pageDictionaries: Record<Locale, { faqTitle: string; faqDescription: string; faqs: { q: string; a: string }[]; contactTitle: string; contactDescription: string; nameLabel: string; emailLabel: string; messageLabel: string; sendButton: string; contactNote: string }> = {
+const pageDictionaries: Record<Locale, { faqTitle: string; faqDescription: string; faqs: { q: string; a: string }[]; contactTitle: string; contactDescription: string; nameLabel: string; emailLabel: string; messageLabel: string; sendButton: string; contactNote: string; contactError: string; contactSuccess: string }> = {
   de: {
     faqTitle: "Häufige Fragen zur Finanzierung",
     faqDescription: "Antworten zu den wichtigsten Fragen vor einer Finanzierungsanfrage.",
@@ -19,6 +19,8 @@ const pageDictionaries: Record<Locale, { faqTitle: string; faqDescription: strin
     messageLabel: "Nachricht",
     sendButton: "Nachricht senden",
     contactNote: "Bitte geben Sie keine sensiblen Finanzdaten im Kontaktformular an.",
+    contactError: "Die Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.",
+    contactSuccess: "Vielen Dank! Ihre Nachricht wurde gesendet.",
   },
   fr: {
     faqTitle: "Questions fréquentes sur le financement",
@@ -38,6 +40,8 @@ const pageDictionaries: Record<Locale, { faqTitle: string; faqDescription: strin
     messageLabel: "Message",
     sendButton: "Envoyer le message",
     contactNote: "Veuillez ne pas indiquer de données financières sensibles dans le formulaire de contact.",
+    contactError: "Le message n'a pas pu être envoyé. Veuillez réessayer plus tard.",
+    contactSuccess: "Merci ! Votre message a bien été envoyé.",
   },
   es: {
     faqTitle: "Preguntas frecuentes sobre financiación",
@@ -57,6 +61,8 @@ const pageDictionaries: Record<Locale, { faqTitle: string; faqDescription: strin
     messageLabel: "Mensaje",
     sendButton: "Enviar mensaje",
     contactNote: "Por favor, no incluya datos financieros sensibles en el formulario de contacto.",
+    contactError: "No se pudo enviar el mensaje. Inténtelo de nuevo más tarde.",
+    contactSuccess: "¡Gracias! Su mensaje ha sido enviado.",
   },
   it: {
     faqTitle: "Domande frequenti sul finanziamento",
@@ -76,6 +82,8 @@ const pageDictionaries: Record<Locale, { faqTitle: string; faqDescription: strin
     messageLabel: "Messaggio",
     sendButton: "Invia messaggio",
     contactNote: "Si prega di non indicare dati finanziari sensibili nel modulo di contatto.",
+    contactError: "Impossibile inviare il messaggio. Riprova più tardi.",
+    contactSuccess: "Grazie! Il tuo messaggio è stato inviato.",
   },
   pt: {
     faqTitle: "Perguntas frequentes sobre financiamento",
@@ -95,6 +103,8 @@ const pageDictionaries: Record<Locale, { faqTitle: string; faqDescription: strin
     messageLabel: "Mensagem",
     sendButton: "Enviar mensagem",
     contactNote: "Por favor, não indique dados financeiros sensíveis no formulário de contacto.",
+    contactError: "Não foi possível enviar a mensagem. Tente novamente mais tarde.",
+    contactSuccess: "Obrigado! A sua mensagem foi enviada.",
   },
 };
 
