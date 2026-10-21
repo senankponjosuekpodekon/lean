@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { getAdminDictionary } from "@/lib/i18n-admin";
+import { defaultLocale, isLocale, locales, type Locale } from "@/lib/i18n";
+import { adminLocaleNames, getAdminDictionary, intlLocales } from "@/lib/i18n-admin";
 import { whatsAppLink } from "@/lib/whatsapp";
 
 interface Application {
@@ -33,10 +34,36 @@ interface ContactMessage {
 
 type Tab = "applications" | "messages" | "settings";
 
-const formatDate = (iso: string) => new Date(iso).toLocaleString("de-DE");
+const LANG_KEY = "velmora-admin-lang";
+const LANG_EVENT = "velmora-admin-lang-change";
+const storedStatusLabels = getAdminDictionary("de").statusLabels;
+
+function subscribeLang(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(LANG_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(LANG_EVENT, callback);
+  };
+}
+
+function getLang(): Locale {
+  const stored = localStorage.getItem(LANG_KEY);
+  if (stored && isLocale(stored)) return stored;
+  const browser = navigator.language.slice(0, 2);
+  return isLocale(browser) ? browser : defaultLocale;
+}
+
+function setLang(lang: Locale) {
+  localStorage.setItem(LANG_KEY, lang);
+  window.dispatchEvent(new Event(LANG_EVENT));
+}
 
 export default function AdminPage() {
-  const t = getAdminDictionary();
+  const lang = useSyncExternalStore(subscribeLang, getLang, () => defaultLocale);
+  const t = getAdminDictionary(lang);
+  const intlLocale = intlLocales[lang];
+  const formatDate = (iso: string) => new Date(iso).toLocaleString(intlLocale);
   const [password, setPassword] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
   const [checking, setChecking] = useState(true);
@@ -71,6 +98,10 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  useEffect(() => {
     fetch("/api/admin/me")
       .then((res) => {
         if (res.ok) {
@@ -103,12 +134,12 @@ export default function AdminPage() {
     setMessages([]);
   };
 
-  const updateStatus = async (reference: string, status: string, label: string) => {
+  const updateStatus = async (reference: string, status: string) => {
     setLoading(true);
     const res = await fetch("/api/applications", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reference, status, statusLabel: label }),
+      body: JSON.stringify({ reference, status, statusLabel: storedStatusLabels[status] }),
     });
     if (res.ok) await loadAll();
     setLoading(false);
@@ -139,6 +170,23 @@ export default function AdminPage() {
   const mailto = (email: string, subject: string, body: string) =>
     `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
+  const languageSelect = (
+    <label className="flex items-center gap-2 text-sm text-text-secondary">
+      {t.languageLabel}
+      <select
+        value={lang}
+        onChange={(e) => {
+          if (isLocale(e.target.value)) setLang(e.target.value);
+        }}
+        className="h-10 rounded-xl border border-border bg-surface px-3 text-sm text-primary"
+      >
+        {locales.map((code) => (
+          <option key={code} value={code}>{adminLocaleNames[code]}</option>
+        ))}
+      </select>
+    </label>
+  );
+
   if (checking) {
     return <div className="max-w-md mx-auto px-5 py-20 text-center text-text-secondary">{t.loginTitle}</div>;
   }
@@ -146,6 +194,7 @@ export default function AdminPage() {
   if (!authenticated) {
     return (
       <div className="max-w-md mx-auto px-5 py-20">
+        <div className="flex justify-end mb-4">{languageSelect}</div>
         <Card className="p-6 space-y-4">
           <h1 className="font-heading text-2xl font-bold text-primary">{t.loginTitle}</h1>
           <p className="text-sm text-text-secondary">{t.loginNote}</p>
@@ -167,7 +216,10 @@ export default function AdminPage() {
     <div className="max-w-7xl mx-auto px-5 lg:px-12 py-12">
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-heading text-3xl font-bold text-primary">{t.overviewTitle}</h1>
-        <Button onClick={logout} variant="outline" className="h-10 px-4 text-sm">Logout</Button>
+        <div className="flex flex-wrap items-center gap-3">
+          {languageSelect}
+          <Button onClick={logout} variant="outline" className="h-10 px-4 text-sm">{t.logout}</Button>
+        </div>
       </div>
 
       <div role="tablist" className="flex flex-wrap gap-2 mb-6">
@@ -211,17 +263,17 @@ export default function AdminPage() {
                   <tr key={app.reference} className="border-b border-border">
                     <td className="p-3 text-text whitespace-nowrap">{app.reference}</td>
                     <td className="p-3 text-text">{fullName}</td>
-                    <td className="p-3 text-text whitespace-nowrap">{(app.amountCents / 100).toLocaleString("de-DE")} €</td>
+                    <td className="p-3 text-text whitespace-nowrap">{(app.amountCents / 100).toLocaleString(intlLocale)} €</td>
                     <td className="p-3 text-text-secondary">{app.purpose}</td>
-                    <td className="p-3 text-text-secondary">{app.statusLabel}</td>
+                    <td className="p-3 text-text-secondary">{t.statusLabels[app.status] ?? app.statusLabel}</td>
                     <td className="p-3">
                       <div className="flex flex-wrap gap-2">
                         <Button onClick={() => setExpanded(isOpen ? null : app.reference)} variant="outline" className="h-8 px-3 text-xs">
                           {isOpen ? t.hideDetails : t.details}
                         </Button>
-                        <Button onClick={() => updateStatus(app.reference, "reviewing", "In Prüfung")} className="h-8 px-3 text-xs" disabled={loading}>{t.review}</Button>
-                        <Button onClick={() => updateStatus(app.reference, "in_analysis", "In Analyse")} className="h-8 px-3 text-xs" disabled={loading}>{t.analysis}</Button>
-                        <Button onClick={() => updateStatus(app.reference, "closed", "Abgeschlossen")} className="h-8 px-3 text-xs" disabled={loading}>{t.close}</Button>
+                        <Button onClick={() => updateStatus(app.reference, "reviewing")} className="h-8 px-3 text-xs" disabled={loading}>{t.review}</Button>
+                        <Button onClick={() => updateStatus(app.reference, "in_analysis")} className="h-8 px-3 text-xs" disabled={loading}>{t.analysis}</Button>
+                        <Button onClick={() => updateStatus(app.reference, "closed")} className="h-8 px-3 text-xs" disabled={loading}>{t.close}</Button>
                       </div>
                     </td>
                   </tr>,
