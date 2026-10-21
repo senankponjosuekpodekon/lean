@@ -1,7 +1,6 @@
 import { defaultLocale, type Locale } from "./i18n";
 
 const de = {
-  languageLabel: "Sprache",
   loginTitle: "Admin-Anmeldung",
   loginNote: "Prototyp: Passwort muss vor Produktion ersetzt werden.",
   passwordLabel: "Passwort",
@@ -71,7 +70,6 @@ const de = {
 export type AdminDictionary = typeof de;
 
 const fr: AdminDictionary = {
-  languageLabel: "Langue",
   loginTitle: "Connexion admin",
   loginNote: "Prototype : le mot de passe doit être remplacé avant la mise en production.",
   passwordLabel: "Mot de passe",
@@ -139,7 +137,6 @@ const fr: AdminDictionary = {
 };
 
 const es: AdminDictionary = {
-  languageLabel: "Idioma",
   loginTitle: "Acceso de administración",
   loginNote: "Prototipo: la contraseña debe sustituirse antes de la puesta en producción.",
   passwordLabel: "Contraseña",
@@ -207,7 +204,6 @@ const es: AdminDictionary = {
 };
 
 const it: AdminDictionary = {
-  languageLabel: "Lingua",
   loginTitle: "Accesso amministratore",
   loginNote: "Prototipo: la password deve essere sostituita prima della messa in produzione.",
   passwordLabel: "Password",
@@ -275,7 +271,6 @@ const it: AdminDictionary = {
 };
 
 const pt: AdminDictionary = {
-  languageLabel: "Idioma",
   loginTitle: "Acesso de administração",
   loginNote: "Protótipo: a palavra-passe deve ser substituída antes da produção.",
   passwordLabel: "Palavra-passe",
@@ -343,14 +338,6 @@ const pt: AdminDictionary = {
 };
 
 const dictionaries: Record<Locale, AdminDictionary> = { de, fr, es, it, pt };
-
-export const adminLocaleNames: Record<Locale, string> = {
-  de: "Deutsch",
-  fr: "Français",
-  es: "Español",
-  it: "Italiano",
-  pt: "Português",
-};
 
 export const intlLocales: Record<Locale, string> = {
   de: "de-DE",

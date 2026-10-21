@@ -66,7 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Suspense fallback={<header className="h-16 border-b border-border" />}>
           <Header />
         </Suspense>
-        {children}
+        <main className="flex-1 w-full">{children}</main>
         <Suspense fallback={<footer className="h-24 border-t border-border" />}>
           <Footer />
         </Suspense>
