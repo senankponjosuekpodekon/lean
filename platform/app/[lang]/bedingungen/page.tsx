@@ -7,7 +7,7 @@ export default function BedingungenPage() {
     <LegalDocument title="Allgemeine Geschäftsbedingungen" description="Bedingungen für die Nutzung von velmora-finanz.de und unseren Vermittlungsservice">
       <LegalSection title="§ 1 Geltungsbereich">
         <p>
-          Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für die Nutzung der Website velmora-finanz.de sowie für alle Leistungen, die {companyDisplayName}
+          Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für die Nutzung der Website velmora-finanz.de sowie für alle Leistungen, die {companyDisplayName}{" "}
           (nachfolgend „Velmora“ oder „wir“) gegenüber Nutzern (nachfolgend „Sie“) im Zusammenhang mit der Vermittlung von Finanzierungen erbringt.
           Abweichende Bedingungen des Nutzers finden keine Anwendung, sofern wir ihrer Geltung nicht ausdrücklich schriftlich zugestimmt haben.
         </p>
