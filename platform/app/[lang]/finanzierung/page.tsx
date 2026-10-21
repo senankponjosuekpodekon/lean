@@ -43,7 +43,7 @@ async function FinanzierungAsync({ params }: { params: Promise<{ lang: Locale }>
 
       <Card className="bg-warning/5 border-warning/20">
         <p className="text-text-secondary">
-          <strong>Hinweis:</strong> Die hier gezeigten Produkte und Konditionen sind Beispiele. Vor Veröffentlichung müssen die verfügbaren Produkte, Plafonds, Zinsen und Kriterien geprüft und validiert werden.
+          <strong>Hinweis:</strong> Die dargestellten Produkte und Konditionen sind beispielhaft. Die verbindlichen Konditionen legt der jeweilige Kreditgeber nach Prüfung Ihrer Anfrage und Ihrer Bonität fest.
         </p>
       </Card>
     </div>

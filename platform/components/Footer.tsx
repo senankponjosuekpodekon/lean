@@ -5,6 +5,7 @@ import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { useAdminLang } from "@/lib/admin-lang";
+import { company, companyCityLine } from "@/lib/company";
 
 function localPath(path: string, lang: Locale) {
   return path.replace(/^\/(de|fr|es|it|pt)\//, `/${lang}/`);
@@ -43,7 +44,7 @@ export function Footer() {
   return (
     <footer className="bg-surface border-t border-border mt-auto animate-fade-in">
       <div className="max-w-7xl mx-auto px-5 lg:px-12 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <p className="font-heading font-bold text-lg text-primary">Velmora</p>
             <p className="mt-2 text-sm text-text-secondary max-w-sm">{t.footerTagline}</p>
@@ -67,6 +68,19 @@ export function Footer() {
                 </Link>
               ))}
             </nav>
+          </div>
+          <div>
+            <p className="font-semibold text-sm text-text mb-3">{t.contact}</p>
+            <address className="not-italic flex flex-col gap-2 text-sm text-text-secondary">
+              <span className="text-text font-medium">{company.name}</span>
+              {company.street && <span>{company.street}</span>}
+              {companyCityLine && <span>{companyCityLine}</span>}
+              {company.phone && (
+                <a href={`tel:${company.phone.replace(/[^+\d]/g, "")}`} className="hover:text-primary transition-colors">{company.phone}</a>
+              )}
+              <a href={`mailto:${company.email}`} className="hover:text-primary transition-colors break-all">{company.email}</a>
+              <a href={`https://${company.website}`} className="hover:text-primary transition-colors">{company.website}</a>
+            </address>
           </div>
         </div>
         <div className="mt-10 pt-6 border-t border-border">
