@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getDictionary, type Locale } from "@/lib/i18n";
+import { useAdminLang } from "@/lib/admin-lang";
 import { company, companyCityLine } from "@/lib/company";
 
 function localPath(path: string, lang: Locale) {
@@ -13,7 +14,9 @@ function localPath(path: string, lang: Locale) {
 export function Footer() {
   const [year, setYear] = useState<string>("");
   const params = useParams();
-  const lang = (params?.lang as Locale) || "de";
+  const isAdmin = usePathname()?.startsWith("/admin") ?? false;
+  const adminLang = useAdminLang();
+  const lang = isAdmin ? adminLang : (params?.lang as Locale) || "de";
   const t = getDictionary(lang);
 
   useEffect(() => {

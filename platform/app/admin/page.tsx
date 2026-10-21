@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { defaultLocale, isLocale, locales, type Locale } from "@/lib/i18n";
-import { adminLocaleNames, getAdminDictionary, intlLocales } from "@/lib/i18n-admin";
+import { useAdminLang } from "@/lib/admin-lang";
+import { getAdminDictionary, intlLocales } from "@/lib/i18n-admin";
 import { whatsAppLink } from "@/lib/whatsapp";
 
 interface Application {
@@ -34,33 +34,10 @@ interface ContactMessage {
 
 type Tab = "applications" | "messages" | "settings";
 
-const LANG_KEY = "velmora-admin-lang";
-const LANG_EVENT = "velmora-admin-lang-change";
 const storedStatusLabels = getAdminDictionary("de").statusLabels;
 
-function subscribeLang(callback: () => void) {
-  window.addEventListener("storage", callback);
-  window.addEventListener(LANG_EVENT, callback);
-  return () => {
-    window.removeEventListener("storage", callback);
-    window.removeEventListener(LANG_EVENT, callback);
-  };
-}
-
-function getLang(): Locale {
-  const stored = localStorage.getItem(LANG_KEY);
-  if (stored && isLocale(stored)) return stored;
-  const browser = navigator.language.slice(0, 2);
-  return isLocale(browser) ? browser : defaultLocale;
-}
-
-function setLang(lang: Locale) {
-  localStorage.setItem(LANG_KEY, lang);
-  window.dispatchEvent(new Event(LANG_EVENT));
-}
-
 export default function AdminPage() {
-  const lang = useSyncExternalStore(subscribeLang, getLang, () => defaultLocale);
+  const lang = useAdminLang();
   const t = getAdminDictionary(lang);
   const intlLocale = intlLocales[lang];
   const formatDate = (iso: string) => new Date(iso).toLocaleString(intlLocale);
@@ -170,22 +147,48 @@ export default function AdminPage() {
   const mailto = (email: string, subject: string, body: string) =>
     `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-  const languageSelect = (
-    <label className="flex items-center gap-2 text-sm text-text-secondary">
-      {t.languageLabel}
-      <select
-        value={lang}
-        onChange={(e) => {
-          if (isLocale(e.target.value)) setLang(e.target.value);
-        }}
-        className="h-10 rounded-xl border border-border bg-surface px-3 text-sm text-primary"
-      >
-        {locales.map((code) => (
-          <option key={code} value={code}>{adminLocaleNames[code]}</option>
-        ))}
-      </select>
-    </label>
-  );
+  const renderActions = (app: Application) => {
+    const isOpen = expanded === app.reference;
+    return (
+      <div className="flex flex-wrap gap-2">
+        <Button onClick={() => setExpanded(isOpen ? null : app.reference)} variant="outline" className="h-8 px-3 text-xs">
+          {isOpen ? t.hideDetails : t.details}
+        </Button>
+        <Button onClick={() => updateStatus(app.reference, "reviewing")} className="h-8 px-3 text-xs" disabled={loading}>{t.review}</Button>
+        <Button onClick={() => updateStatus(app.reference, "in_analysis")} className="h-8 px-3 text-xs" disabled={loading}>{t.analysis}</Button>
+        <Button onClick={() => updateStatus(app.reference, "closed")} className="h-8 px-3 text-xs" disabled={loading}>{t.close}</Button>
+      </div>
+    );
+  };
+
+  const renderDetails = (app: Application) => {
+    const greeting = t.replyGreeting(`${app.firstName} ${app.lastName}`, app.reference);
+    const wa = whatsAppLink(app.phone, greeting);
+    return (
+      <>
+        <dl className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 mb-4">
+          <div><dt className="text-xs text-text-secondary">{t.email}</dt><dd className="text-text break-all">{app.email}</dd></div>
+          <div><dt className="text-xs text-text-secondary">{t.phone}</dt><dd className="text-text">{app.phone}</dd></div>
+          <div><dt className="text-xs text-text-secondary">{t.term}</dt><dd className="text-text">{app.termMonths} {t.months}</dd></div>
+          <div><dt className="text-xs text-text-secondary">{t.createdAt}</dt><dd className="text-text">{formatDate(app.createdAt)}</dd></div>
+          {Object.entries(app.details ?? {}).map(([key, value]) => (
+            <div key={key}>
+              <dt className="text-xs text-text-secondary">{t.detailLabels[key] ?? key}</dt>
+              <dd className="text-text break-words">{Array.isArray(value) ? value.join(", ") : value}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className="flex flex-wrap gap-2">
+          <Button href={mailto(app.email, `${t.reference} ${app.reference}`, greeting)} className="h-9 px-4 text-sm">{t.replyEmail}</Button>
+          {wa && (
+            <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center h-9 px-4 rounded-xl text-sm font-semibold bg-[#25D366] text-white hover:opacity-90">
+              {t.replyWhatsApp}
+            </a>
+          )}
+        </div>
+      </>
+    );
+  };
 
   if (checking) {
     return <div className="max-w-md mx-auto px-5 py-20 text-center text-text-secondary">{t.loginTitle}</div>;
@@ -194,7 +197,6 @@ export default function AdminPage() {
   if (!authenticated) {
     return (
       <div className="max-w-md mx-auto px-5 py-20">
-        <div className="flex justify-end mb-4">{languageSelect}</div>
         <Card className="p-6 space-y-4">
           <h1 className="font-heading text-2xl font-bold text-primary">{t.loginTitle}</h1>
           <p className="text-sm text-text-secondary">{t.loginNote}</p>
@@ -217,7 +219,6 @@ export default function AdminPage() {
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <h1 className="font-heading text-3xl font-bold text-primary">{t.overviewTitle}</h1>
         <div className="flex flex-wrap items-center gap-3">
-          {languageSelect}
           <Button onClick={logout} variant="outline" className="h-10 px-4 text-sm">{t.logout}</Button>
         </div>
       </div>
@@ -241,78 +242,70 @@ export default function AdminPage() {
       {loadError && <p role="alert" className="mb-4 text-sm text-error">{t.loadError}</p>}
 
       {tab === "applications" && (
-        <Card className="overflow-x-auto p-0">
-          <table className="w-full text-sm">
-            <thead className="bg-background border-b border-border">
-              <tr>
-                <th className="text-left p-3 font-semibold text-text">{t.reference}</th>
-                <th className="text-left p-3 font-semibold text-text">{t.name}</th>
-                <th className="text-left p-3 font-semibold text-text">{t.amount}</th>
-                <th className="text-left p-3 font-semibold text-text">{t.purpose}</th>
-                <th className="text-left p-3 font-semibold text-text">{t.status}</th>
-                <th className="text-left p-3 font-semibold text-text">{t.actions}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {applications.map((app) => {
-                const fullName = `${app.firstName} ${app.lastName}`;
-                const greeting = t.replyGreeting(fullName, app.reference);
-                const wa = whatsAppLink(app.phone, greeting);
-                const isOpen = expanded === app.reference;
-                return [
+        <>
+          <div className="md:hidden space-y-4">
+            {applications.length === 0 && <Card className="text-center text-text-secondary">{t.empty}</Card>}
+            {applications.map((app) => {
+              const isOpen = expanded === app.reference;
+              return (
+                <Card key={app.reference} className="space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-text">{app.firstName} {app.lastName}</p>
+                      <p className="text-xs text-text-secondary break-all">{app.reference}</p>
+                    </div>
+                    <span className="shrink-0 text-xs font-semibold px-2 py-1 rounded-full bg-accent/30 text-primary">
+                      {t.statusLabels[app.status] ?? app.statusLabel}
+                    </span>
+                  </div>
+                  <p className="text-text">
+                    <span className="font-semibold">{(app.amountCents / 100).toLocaleString(intlLocale)} €</span>
+                    <span className="text-text-secondary"> · {app.purpose}</span>
+                  </p>
+                  {renderActions(app)}
+                  {isOpen && <div className="pt-3 border-t border-border">{renderDetails(app)}</div>}
+                </Card>
+              );
+            })}
+          </div>
+
+          <Card className="hidden md:block overflow-x-auto p-0">
+            <table className="w-full text-sm">
+              <thead className="bg-background border-b border-border">
+                <tr>
+                  <th className="text-left p-3 font-semibold text-text">{t.reference}</th>
+                  <th className="text-left p-3 font-semibold text-text">{t.name}</th>
+                  <th className="text-left p-3 font-semibold text-text">{t.amount}</th>
+                  <th className="text-left p-3 font-semibold text-text">{t.purpose}</th>
+                  <th className="text-left p-3 font-semibold text-text">{t.status}</th>
+                  <th className="text-left p-3 font-semibold text-text">{t.actions}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {applications.map((app) => [
                   <tr key={app.reference} className="border-b border-border">
                     <td className="p-3 text-text whitespace-nowrap">{app.reference}</td>
-                    <td className="p-3 text-text">{fullName}</td>
+                    <td className="p-3 text-text">{app.firstName} {app.lastName}</td>
                     <td className="p-3 text-text whitespace-nowrap">{(app.amountCents / 100).toLocaleString(intlLocale)} €</td>
                     <td className="p-3 text-text-secondary">{app.purpose}</td>
                     <td className="p-3 text-text-secondary">{t.statusLabels[app.status] ?? app.statusLabel}</td>
-                    <td className="p-3">
-                      <div className="flex flex-wrap gap-2">
-                        <Button onClick={() => setExpanded(isOpen ? null : app.reference)} variant="outline" className="h-8 px-3 text-xs">
-                          {isOpen ? t.hideDetails : t.details}
-                        </Button>
-                        <Button onClick={() => updateStatus(app.reference, "reviewing")} className="h-8 px-3 text-xs" disabled={loading}>{t.review}</Button>
-                        <Button onClick={() => updateStatus(app.reference, "in_analysis")} className="h-8 px-3 text-xs" disabled={loading}>{t.analysis}</Button>
-                        <Button onClick={() => updateStatus(app.reference, "closed")} className="h-8 px-3 text-xs" disabled={loading}>{t.close}</Button>
-                      </div>
-                    </td>
+                    <td className="p-3">{renderActions(app)}</td>
                   </tr>,
-                  isOpen && (
+                  expanded === app.reference && (
                     <tr key={`${app.reference}-details`} className="border-b border-border bg-background/60">
-                      <td colSpan={6} className="p-4">
-                        <dl className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 mb-4">
-                          <div><dt className="text-xs text-text-secondary">{t.email}</dt><dd className="text-text break-all">{app.email}</dd></div>
-                          <div><dt className="text-xs text-text-secondary">{t.phone}</dt><dd className="text-text">{app.phone}</dd></div>
-                          <div><dt className="text-xs text-text-secondary">{t.term}</dt><dd className="text-text">{app.termMonths} {t.months}</dd></div>
-                          <div><dt className="text-xs text-text-secondary">{t.createdAt}</dt><dd className="text-text">{formatDate(app.createdAt)}</dd></div>
-                          {Object.entries(app.details ?? {}).map(([key, value]) => (
-                            <div key={key}>
-                              <dt className="text-xs text-text-secondary">{t.detailLabels[key] ?? key}</dt>
-                              <dd className="text-text">{Array.isArray(value) ? value.join(", ") : value}</dd>
-                            </div>
-                          ))}
-                        </dl>
-                        <div className="flex flex-wrap gap-2">
-                          <Button href={mailto(app.email, `${t.reference} ${app.reference}`, greeting)} className="h-9 px-4 text-sm">{t.replyEmail}</Button>
-                          {wa && (
-                            <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center h-9 px-4 rounded-xl text-sm font-semibold bg-[#25D366] text-white hover:opacity-90">
-                              {t.replyWhatsApp}
-                            </a>
-                          )}
-                        </div>
-                      </td>
+                      <td colSpan={6} className="p-4">{renderDetails(app)}</td>
                     </tr>
                   ),
-                ];
-              })}
-              {applications.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="p-6 text-center text-text-secondary">{t.empty}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </Card>
+                ])}
+                {applications.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="p-6 text-center text-text-secondary">{t.empty}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </Card>
+        </>
       )}
 
       {tab === "messages" && (

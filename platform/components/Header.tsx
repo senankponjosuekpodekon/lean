@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "./ui/Button";
-import { getDictionary, locales, type Locale } from "@/lib/i18n";
+import { getDictionary, isLocale, locales, type Locale } from "@/lib/i18n";
+import { setAdminLang, useAdminLang } from "@/lib/admin-lang";
 
 function localPath(path: string, lang: Locale) {
   return path.replace(/^\/(de|fr|es|it|pt)\//, `/${lang}/`);
@@ -13,7 +14,9 @@ function localPath(path: string, lang: Locale) {
 export function Header() {
   const [open, setOpen] = useState(false);
   const params = useParams();
-  const lang = (params?.lang as Locale) || "de";
+  const isAdmin = usePathname()?.startsWith("/admin") ?? false;
+  const adminLang = useAdminLang();
+  const lang = isAdmin ? adminLang : (params?.lang as Locale) || "de";
   const t = getDictionary(lang);
 
   const navLinks = [
@@ -49,6 +52,10 @@ export function Header() {
             value={lang}
             onChange={(e) => {
               const newLang = e.target.value;
+              if (isAdmin) {
+                if (isLocale(newLang)) setAdminLang(newLang);
+                return;
+              }
               const currentPath = window.location.pathname;
               const newPath = currentPath.replace(/^\/(de|fr|es|it|pt)/, `/${newLang}`);
               window.location.href = newPath;
@@ -59,7 +66,7 @@ export function Header() {
               <option key={l} value={l}>{l.toUpperCase()}</option>
             ))}
           </select>
-          <Button href={localPath("/de/kreditrechner", lang)} variant="primary" className="hidden sm:flex h-10 px-4 text-sm">
+          <Button href={localPath("/de/kreditrechner", lang)} variant="primary" className="max-sm:hidden h-10 px-4 text-sm">
             {t.calculateCredit}
           </Button>
 
