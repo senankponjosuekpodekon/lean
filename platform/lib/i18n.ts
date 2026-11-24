@@ -92,6 +92,9 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     testimonial3Name: "Thomas W.",
     testimonial3Location: "Köln",
     testimonial3Text: "Nach der Prüfung hatte ich schnell ein passendes Angebot. Die Betreuung per Nachricht war freundlich und unkompliziert.",
+    testimonial4Name: "Velmora-Kunde",
+    testimonial4Location: "Kundenfeedback",
+    testimonial4Text: "Ich möchte Ihnen zu Ihrer Professionalität, Ihrer Seriosität und Ihrem Engagement für Ihre Kunden gratulieren. Vielen Dank für Ihr Vertrauen und Ihre Begleitung, die Ihr Unternehmen zu einem zuverlässigen und geschätzten Finanzpartner machen. Weiter so und viel Erfolg für Ihr ganzes Team!",
   },
   fr: {
     home: "Accueil",
@@ -182,6 +185,9 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     testimonial3Name: "Thomas W.",
     testimonial3Location: "Cologne",
     testimonial3Text: "Après vérification, j'ai vite reçu une offre adaptée. Le suivi par message était cordial et simple.",
+    testimonial4Name: "Client Velmora",
+    testimonial4Location: "Avis reçu par e-mail",
+    testimonial4Text: "Je tiens à vous féliciter pour votre professionnalisme, votre sérieux et votre engagement envers vos clients. Merci pour votre confiance et votre accompagnement, qui font de votre société un partenaire financier fiable et apprécié. Bonne continuation et beaucoup de succès à toute votre équipe !",
   },
   es: {
     home: "Inicio",
@@ -272,6 +278,9 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     testimonial3Name: "Thomas W.",
     testimonial3Location: "Colonia",
     testimonial3Text: "Tras la verificación recibí rápidamente una oferta adecuada. La atención por mensaje fue amable y sencilla.",
+    testimonial4Name: "Cliente de Velmora",
+    testimonial4Location: "Opinión recibida por email",
+    testimonial4Text: "Quiero felicitarles por su profesionalidad, su seriedad y su compromiso con sus clientes. Gracias por su confianza y su acompañamiento, que hacen de su empresa un socio financiero fiable y apreciado. ¡Adelante y mucho éxito a todo el equipo!",
   },
   it: {
     home: "Home",
@@ -362,6 +371,9 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     testimonial3Name: "Thomas W.",
     testimonial3Location: "Colonia",
     testimonial3Text: "Dopo la verifica ho ricevuto rapidamente un'offerta adeguata. L'assistenza via messaggio è stata cordiale e semplice.",
+    testimonial4Name: "Cliente Velmora",
+    testimonial4Location: "Recensione ricevuta via email",
+    testimonial4Text: "Desidero congratularmi per la professionalità, la serietà e l'impegno verso i clienti. Grazie per la fiducia e l'accompagnamento, che rendono la vostra società un partner finanziario affidabile e apprezzato. Continuate così e tanto successo a tutto il team!",
   },
   pt: {
     home: "Início",
@@ -452,6 +464,9 @@ const dictionaries: Record<Locale, Record<string, string>> = {
     testimonial3Name: "Thomas W.",
     testimonial3Location: "Colónia",
     testimonial3Text: "Após a verificação recebi rapidamente uma oferta adequada. O acompanhamento por mensagem foi cordial e simples.",
+    testimonial4Name: "Cliente Velmora",
+    testimonial4Location: "Feedback recebido por email",
+    testimonial4Text: "Quero felicitá-los pelo profissionalismo, pela seriedade e pelo compromisso com os clientes. Obrigado pela confiança e pelo acompanhamento, que fazem da vossa empresa um parceiro financeiro fiável e apreciado. Continuem assim e muito sucesso a toda a equipa!",
   },
 };
 
