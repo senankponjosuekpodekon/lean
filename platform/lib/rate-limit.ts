@@ -7,7 +7,7 @@ const buckets = new Map<string, Bucket>();
 const MAX_BUCKETS = 5000;
 
 function prune(now: number) {
-  if (buckets.size <= MAX_BUCKETS) return;
+  if (buckets.size < MAX_BUCKETS) return;
   for (const [key, bucket] of buckets) {
     if (bucket.resetAt <= now) buckets.delete(key);
   }
