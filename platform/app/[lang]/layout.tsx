@@ -18,8 +18,14 @@ async function LangGuard({
   if (!isLocale(lang)) notFound();
   return (
     <>
-      {/* The root <html lang="de"> is static; keep it aligned with the active locale,
-          including on client-side navigations. */}
+      {/* The root <html lang="de"> is static. The inline script fixes the language as the
+          HTML streams (before hydration); HtmlLang keeps it correct on client-side
+          navigations, where the script does not re-run. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `document.documentElement.lang=${JSON.stringify(lang)}`,
+        }}
+      />
       <HtmlLang lang={lang} />
       {children}
     </>
