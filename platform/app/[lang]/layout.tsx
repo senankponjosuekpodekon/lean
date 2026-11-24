@@ -15,7 +15,17 @@ async function LangGuard({
 }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
-  return <>{children}</>;
+  return (
+    <>
+      {/* The root <html lang="de"> is static; align it with the active locale once streamed. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `document.documentElement.lang=${JSON.stringify(lang)}`,
+        }}
+      />
+      {children}
+    </>
+  );
 }
 
 export default function LangLayout({

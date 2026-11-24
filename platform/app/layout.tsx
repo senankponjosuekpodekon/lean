@@ -5,6 +5,32 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { company } from "@/lib/company";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Organization", "FinancialService"],
+      "@id": "https://velmora-finanz.de/#organization",
+      name: company.name,
+      url: "https://velmora-finanz.de",
+      logo: "https://velmora-finanz.de/images/velmora-logo.png",
+      email: company.email,
+      telephone: company.phone,
+      description:
+        "Unabhängiger Kreditvermittler: transparente Informationen und Online-Anfrage für Verbraucherfinanzierungen.",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://velmora-finanz.de/#website",
+      url: "https://velmora-finanz.de",
+      name: "Velmora",
+      publisher: { "@id": "https://velmora-finanz.de/#organization" },
+      inLanguage: ["de", "fr", "es", "it", "pt"],
+    },
+  ],
+};
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -26,16 +52,6 @@ export const metadata: Metadata = {
   description:
     "Velmora macht Finanzierung übersichtlicher. Informieren Sie sich, berechnen Sie eine unverbindliche Monatsrate und stellen Sie Ihre Anfrage online.",
   metadataBase: new URL("https://velmora-finanz.de"),
-  alternates: {
-    canonical: "/",
-    languages: {
-      de: "/de",
-      fr: "/fr",
-      es: "/es",
-      it: "/it",
-      pt: "/pt",
-    },
-  },
   openGraph: {
     type: "website",
     locale: "de_DE",
@@ -61,7 +77,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${manrope.variable} ${inter.variable} h-full antialiased`}>
+    <html lang="de" suppressHydrationWarning className={`${manrope.variable} ${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background text-text">
         <Suspense fallback={<header className="h-16 border-b border-border" />}>
           <Header />
@@ -73,6 +89,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Suspense fallback={null}>
           <WhatsAppButton />
         </Suspense>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </body>
     </html>
   );

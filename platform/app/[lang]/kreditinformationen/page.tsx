@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { LegalDocument, LegalSection } from "@/components/LegalDocument";
 import { calculateLoan, LOAN_CONFIG } from "@/lib/loan";
+import { localizedMetadata } from "@/lib/seo";
+import { getDictionary, isLocale } from "@/lib/i18n";
 
 const euro = (cents: number) =>
   (cents / 100).toLocaleString("de-DE", { style: "currency", currency: "EUR" });
@@ -107,4 +109,11 @@ export default function KreditinformationenPage() {
       </LegalSection>
     </LegalDocument>
   );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = getDictionary(lang);
+  return localizedMetadata({ lang, route: "kreditinformationen", title: t.creditInfo, description: t.footerTagline });
 }

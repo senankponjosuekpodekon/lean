@@ -3,6 +3,8 @@ import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/PageHeader";
 import { getInfoDictionary } from "@/lib/i18n-info";
 import type { Locale } from "@/lib/i18n";
+import { localizedMetadata } from "@/lib/seo";
+import { isLocale } from "@/lib/i18n";
 
 export default function UeberUnsPage({ params }: { params: Promise<{ lang: Locale }> }) {
   return (
@@ -35,4 +37,11 @@ async function UeberUnsAsync({ params }: { params: Promise<{ lang: Locale }> }) 
       </div>
     </div>
   );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = getInfoDictionary(lang);
+  return localizedMetadata({ lang, route: "ueber-uns", title: t.aboutTitle, description: t.aboutDescription });
 }

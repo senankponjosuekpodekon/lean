@@ -1,5 +1,7 @@
 import { CompanyAddress, LegalDocument, LegalSection } from "@/components/LegalDocument";
 import { company, companyCityLine, companyDisplayName } from "@/lib/company";
+import { localizedMetadata } from "@/lib/seo";
+import { getDictionary, isLocale } from "@/lib/i18n";
 
 export default function WiderrufPage() {
   return (
@@ -57,4 +59,11 @@ export default function WiderrufPage() {
       </LegalSection>
     </LegalDocument>
   );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = getDictionary(lang);
+  return localizedMetadata({ lang, route: "widerruf", title: t.withdrawal, description: t.footerTagline });
 }

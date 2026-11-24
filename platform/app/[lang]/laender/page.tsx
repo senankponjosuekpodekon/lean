@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/Card";
 import { PageHeader } from "@/components/PageHeader";
+import { localizedMetadata } from "@/lib/seo";
+import { getDictionary, isLocale } from "@/lib/i18n";
 
 const markets = [
   { code: "DE", name: "Deutschland", status: "Geplant als erster Markt" },
@@ -36,4 +38,11 @@ export default function LaenderPage() {
       </Card>
     </div>
   );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = getDictionary(lang);
+  return localizedMetadata({ lang, route: "laender", title: "Länder und Verfügbarkeit", description: t.footerTagline });
 }

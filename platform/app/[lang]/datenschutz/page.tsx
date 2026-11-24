@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { CompanyAddress, LegalDocument, LegalSection } from "@/components/LegalDocument";
+import { localizedMetadata } from "@/lib/seo";
+import { getDictionary, isLocale } from "@/lib/i18n";
 
 export default function DatenschutzPage() {
   return (
@@ -150,4 +152,11 @@ export default function DatenschutzPage() {
       </LegalSection>
     </LegalDocument>
   );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = getDictionary(lang);
+  return localizedMetadata({ lang, route: "datenschutz", title: t.privacy, description: t.footerTagline });
 }
