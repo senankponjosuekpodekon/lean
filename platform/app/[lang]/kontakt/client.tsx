@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { PageHeader } from "@/components/PageHeader";
 import { getPageDictionary } from "@/lib/i18n-pages";
+import { trackContactSubmit } from "@/lib/gtag";
 import type { Locale } from "@/lib/i18n";
 
 export default function KontaktPage() {
@@ -39,7 +40,10 @@ function KontaktInner() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message, lang }),
       });
-      if (res.ok) setSent(true);
+      if (res.ok) {
+        setSent(true);
+        trackContactSubmit();
+      }
       else setError(true);
     } catch {
       setError(true);
