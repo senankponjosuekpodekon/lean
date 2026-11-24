@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, usePathname } from "next/navigation";
 import { getDictionary, type Locale } from "@/lib/i18n";
+import { trackAdsConversion } from "@/lib/gtag";
 import { whatsAppLink } from "@/lib/whatsapp";
 
 export function WhatsAppButton() {
@@ -31,6 +32,7 @@ export function WhatsAppButton() {
     <a
       href={href}
       target="_blank"
+      onClick={trackAdsConversion}
       rel="noopener noreferrer"
       aria-label={t.whatsappChat}
       title={t.whatsappChat}

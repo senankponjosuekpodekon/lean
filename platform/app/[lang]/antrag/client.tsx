@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { calculateLoan, formatCurrency, LOAN_CONFIG, parseAmountToCents } from "@/lib/loan";
 import { getFormDictionary, type Locale } from "@/lib/i18n-form";
+import { trackAdsConversion } from "@/lib/gtag";
 import Link from "next/link";
 
 type Step = 1 | 2 | 3 | 4 | 5;
@@ -165,6 +166,7 @@ function AntragInner() {
       if (res.ok) {
         setReference(data.reference);
         setSubmitted("success");
+        trackAdsConversion();
       } else {
         setSubmitted("error");
       }
