@@ -16,7 +16,10 @@ export function isMailConfigured(env: NodeJS.ProcessEnv = process.env): boolean 
 }
 
 export async function sendMail(message: MailMessage, env: NodeJS.ProcessEnv = process.env): Promise<boolean> {
-  if (!isMailConfigured(env)) return false;
+  if (!isMailConfigured(env)) {
+    console.warn("Mail skipped: set MAIL_FROM plus RESEND_API_KEY or SMTP_HOST to enable email delivery");
+    return false;
+  }
   const from = env.MAIL_FROM as string;
   const subject = oneLine(message.subject);
   const to = oneLine(message.to);

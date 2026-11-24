@@ -4,8 +4,14 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { contactEmails } from "@/lib/emails";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 import { sendMails } from "@/lib/mailer";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
+  if (!rateLimit(`contact:${clientIp(request)}`, 5, 60_000)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -15,7 +21,7 @@ export async function POST(request: Request) {
   const { name, email, message } = body;
   if (
     typeof name !== "string" || !name.trim() || name.length > 200 ||
-    typeof email !== "string" || !email.includes("@") || email.length > 200 ||
+    typeof email !== "string" || !EMAIL_PATTERN.test(email) || email.length > 200 ||
     typeof message !== "string" || !message.trim() || message.length > 5000
   ) {
     return NextResponse.json({ error: "Invalid fields" }, { status: 400 });
