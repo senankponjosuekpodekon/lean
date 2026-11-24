@@ -35,11 +35,10 @@ export interface SiteSettings {
 
 // pg parses `sslmode` from the connection string and overrides the `ssl` option;
 // strip it so certificate verification is enforced via the explicit option below.
-const connectionString = (process.env.PRISMA_DATABASE_URL || process.env.POSTGRES_URL || "").replace(
-  /([?&])sslmode=[^&]*&?/,
-  "$1"
-);
-const sslRequired = /sslmode=require/.test(process.env.PRISMA_DATABASE_URL || process.env.POSTGRES_URL || "");
+const databaseUrl = process.env.PRISMA_DATABASE_URL || process.env.POSTGRES_URL || "";
+const sslMode = /[?&]sslmode=([^&]*)/.exec(databaseUrl)?.[1];
+const connectionString = databaseUrl.replace(/([?&])sslmode=[^&]*&?/, "$1");
+const sslRequired = sslMode !== undefined && sslMode !== "disable";
 
 const pool = new Pool({
   connectionString,

@@ -11,11 +11,6 @@ function prune(now: number) {
   for (const [key, bucket] of buckets) {
     if (bucket.resetAt <= now) buckets.delete(key);
   }
-  if (buckets.size <= MAX_BUCKETS) return;
-  const ordered = [...buckets.entries()].sort((a, b) => a[1].resetAt - b[1].resetAt);
-  for (const [key] of ordered.slice(0, buckets.size - MAX_BUCKETS)) {
-    buckets.delete(key);
-  }
 }
 
 export function rateLimit(key: string, limit: number, windowMs: number): boolean {
@@ -23,6 +18,7 @@ export function rateLimit(key: string, limit: number, windowMs: number): boolean
   prune(now);
   const bucket = buckets.get(key);
   if (!bucket || bucket.resetAt <= now) {
+    if (buckets.size >= MAX_BUCKETS) return false;
     buckets.set(key, { count: 1, resetAt: now + windowMs });
     return true;
   }
