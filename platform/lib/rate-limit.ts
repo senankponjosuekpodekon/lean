@@ -20,13 +20,18 @@ export function rateLimit(key: string, limit: number, windowMs: number): boolean
   const now = Date.now();
   prune(now);
   const bucket = buckets.get(key);
-  if (!bucket || bucket.resetAt <= now) {
-    if (buckets.size >= MAX_BUCKETS) return false;
-    buckets.set(key, { count: 1, resetAt: now + windowMs });
+  if (bucket) {
+    if (bucket.resetAt <= now) {
+      bucket.count = 1;
+      bucket.resetAt = now + windowMs;
+      return true;
+    }
+    if (bucket.count >= limit) return false;
+    bucket.count += 1;
     return true;
   }
-  if (bucket.count >= limit) return false;
-  bucket.count += 1;
+  if (buckets.size >= MAX_BUCKETS) return false;
+  buckets.set(key, { count: 1, resetAt: now + windowMs });
   return true;
 }
 
