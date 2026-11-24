@@ -5,9 +5,12 @@ interface Bucket {
 
 const buckets = new Map<string, Bucket>();
 const MAX_BUCKETS = 5000;
+const PRUNE_INTERVAL_MS = 10_000;
+let lastPrune = 0;
 
 function prune(now: number) {
-  if (buckets.size < MAX_BUCKETS) return;
+  if (buckets.size < MAX_BUCKETS || now - lastPrune < PRUNE_INTERVAL_MS) return;
+  lastPrune = now;
   for (const [key, bucket] of buckets) {
     if (bucket.resetAt <= now) buckets.delete(key);
   }
