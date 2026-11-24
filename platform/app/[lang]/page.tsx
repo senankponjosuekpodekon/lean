@@ -51,7 +51,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
     { name: t.testimonial1Name, location: t.testimonial1Location, text: t.testimonial1Text },
     { name: t.testimonial2Name, location: t.testimonial2Location, text: t.testimonial2Text },
     { name: t.testimonial3Name, location: t.testimonial3Location, text: t.testimonial3Text },
-    { name: t.testimonial4Name, location: t.testimonial4Location, text: t.testimonial4Text },
+    { name: t.testimonial4Name, location: t.testimonial4Location, text: t.testimonial4Text, rating: 0 },
   ];
 
   const faq = [
@@ -172,13 +172,15 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
         <div className="grid md:grid-cols-2 gap-6">
           {testimonials.map((item, i) => (
             <Card key={item.name} className={`flex flex-col p-6 animate-fade-in-up stagger-${i + 1}`}>
-              <div className="flex gap-1 text-accent mb-4" aria-label="5/5">
-                {Array.from({ length: 5 }).map((_, s) => (
+              {(item.rating ?? 5) > 0 && (
+              <div className="flex gap-1 text-accent mb-4" aria-label={`${item.rating ?? 5}/5`}>
+                {Array.from({ length: item.rating ?? 5 }).map((_, s) => (
                   <svg key={s} width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" />
                   </svg>
                 ))}
               </div>
+              )}
               <p className="text-text-secondary text-sm leading-relaxed flex-1">&ldquo;{item.text}&rdquo;</p>
               <div className="mt-5 pt-4 border-t border-border">
                 <p className="font-heading font-bold text-primary">{item.name}</p>
