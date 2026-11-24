@@ -1,6 +1,7 @@
 import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { isLocale, locales } from "@/lib/i18n";
+import { HtmlLang } from "@/components/HtmlLang";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -17,12 +18,9 @@ async function LangGuard({
   if (!isLocale(lang)) notFound();
   return (
     <>
-      {/* The root <html lang="de"> is static; align it with the active locale once streamed. */}
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `document.documentElement.lang=${JSON.stringify(lang)}`,
-        }}
-      />
+      {/* The root <html lang="de"> is static; keep it aligned with the active locale,
+          including on client-side navigations. */}
+      <HtmlLang lang={lang} />
       {children}
     </>
   );
