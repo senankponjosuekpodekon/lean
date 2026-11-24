@@ -51,7 +51,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
     { name: t.testimonial1Name, location: t.testimonial1Location, text: t.testimonial1Text },
     { name: t.testimonial2Name, location: t.testimonial2Location, text: t.testimonial2Text },
     { name: t.testimonial3Name, location: t.testimonial3Location, text: t.testimonial3Text },
-    { name: t.testimonial4Name, location: t.testimonial4Location, text: t.testimonial4Text, rating: 0 },
+    { name: t.testimonial4Name, location: t.testimonial4Location, text: t.testimonial4Text, rating: 5 },
   ];
 
   const faq = [
