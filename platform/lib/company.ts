@@ -6,7 +6,7 @@ export const company = {
   city: "",
   country: "Deutschland",
   representative: "",
-  phone: "",
+  phone: "+49 177 2057051",
   email: "kontakt@velmora-finanz.de",
   website: "www.velmora-finanz.de",
   registerCourt: "",

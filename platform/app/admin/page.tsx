@@ -77,19 +77,36 @@ export default function AdminPage() {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [settingsStatus, setSettingsStatus] = useState<"idle" | "saved" | "error">("idle");
 
+  const PAGE = 200;
+  const fetchAllPages = async <T,>(url: string, unauthorized: { current: boolean }): Promise<{ items: T[]; ok: boolean }> => {
+    const items: T[] = [];
+    for (let offset = 0; ; offset += PAGE) {
+      const res = await fetch(`${url}?offset=${offset}`);
+      if (res.status === 401) {
+        unauthorized.current = true;
+        return { items, ok: false };
+      }
+      if (!res.ok) return { items, ok: false };
+      const page: T[] = await res.json();
+      items.push(...page);
+      if (page.length < PAGE) return { items, ok: true };
+    }
+  };
+
   const loadAll = async () => {
-    const [appsRes, msgsRes, settingsRes] = await Promise.all([
-      fetch("/api/applications"),
-      fetch("/api/contact"),
+    const unauthorized = { current: false };
+    const [appsResult, msgsResult, settingsRes] = await Promise.all([
+      fetchAllPages<Application>("/api/applications", unauthorized),
+      fetchAllPages<ContactMessage>("/api/contact", unauthorized),
       fetch("/api/settings"),
     ]);
-    if (appsRes.status === 401 || msgsRes.status === 401) {
+    if (unauthorized.current) {
       setAuthenticated(false);
       return;
     }
-    setLoadError(!appsRes.ok || !msgsRes.ok);
-    if (appsRes.ok) setApplications(await appsRes.json());
-    if (msgsRes.ok) setMessages(await msgsRes.json());
+    setLoadError(!appsResult.ok || !msgsResult.ok);
+    if (appsResult.ok) setApplications(appsResult.items);
+    if (msgsResult.ok) setMessages(msgsResult.items);
     if (settingsRes.ok) {
       const s = await settingsRes.json();
       setWhatsappEnabled(Boolean(s.whatsappEnabled));

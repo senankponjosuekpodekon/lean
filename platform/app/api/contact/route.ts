@@ -4,8 +4,14 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { contactEmails } from "@/lib/emails";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 import { sendMails } from "@/lib/mailer";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
+  if (!rateLimit(`contact:${clientIp(request)}`, 5, 60_000)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -15,7 +21,7 @@ export async function POST(request: Request) {
   const { name, email, message } = body;
   if (
     typeof name !== "string" || !name.trim() || name.length > 200 ||
-    typeof email !== "string" || !email.includes("@") || email.length > 200 ||
+    typeof email !== "string" || email.length > 200 || !EMAIL_PATTERN.test(email) ||
     typeof message !== "string" || !message.trim() || message.length > 5000
   ) {
     return NextResponse.json({ error: "Invalid fields" }, { status: 400 });
@@ -32,14 +38,15 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await requireAdmin();
   } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    return NextResponse.json(await listContactMessages());
+    const offset = Number(new URL(request.url).searchParams.get("offset") ?? 0);
+    return NextResponse.json(await listContactMessages(Number.isFinite(offset) ? offset : 0));
   } catch (error) {
     console.error("listContactMessages failed:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

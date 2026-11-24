@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import { Pool, type QueryResult } from "pg";
 
 export type ApplicationDetails = Record<string, string | string[]>;
@@ -32,9 +33,16 @@ export interface SiteSettings {
   whatsappNumber: string;
 }
 
+// pg parses `sslmode` from the connection string and overrides the `ssl` option;
+// strip it so certificate verification is enforced via the explicit option below.
+const databaseUrl = process.env.PRISMA_DATABASE_URL || process.env.POSTGRES_URL || "";
+const sslMode = /[?&]sslmode=([^&]*)/.exec(databaseUrl)?.[1];
+const connectionString = databaseUrl.replace(/([?&])sslmode=[^&]*&?/, "$1");
+const sslRequired = sslMode !== undefined && sslMode !== "disable";
+
 const pool = new Pool({
-  connectionString: process.env.PRISMA_DATABASE_URL || process.env.POSTGRES_URL,
-  ssl: process.env.PRISMA_DATABASE_URL?.includes("sslmode=require") ? { rejectUnauthorized: false } : false,
+  connectionString,
+  ssl: sslRequired ? { rejectUnauthorized: true } : false,
 });
 
 let schemaReady: Promise<void> | null = null;
@@ -118,7 +126,7 @@ function rowToMessage(row: Record<string, unknown>): ContactMessage {
 export async function createApplication(
   data: Omit<Application, "id" | "reference" | "createdAt" | "status" | "statusLabel">
 ): Promise<Application> {
-  const reference = `AN-${Date.now()}`;
+  const reference = `AN-${Date.now()}-${randomBytes(3).toString("hex").toUpperCase()}`;
   const result = await query(
     `INSERT INTO applications (reference, status, amount_cents, term_months, purpose, first_name, last_name, email, phone, status_label, details)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
@@ -128,8 +136,11 @@ export async function createApplication(
   return rowToApp(result.rows[0]);
 }
 
-export async function listApplications(): Promise<Application[]> {
-  const result = await query(`SELECT * FROM applications ORDER BY created_at DESC`);
+export async function listApplications(offset = 0, limit = 200): Promise<Application[]> {
+  const result = await query(`SELECT * FROM applications ORDER BY created_at DESC LIMIT $1 OFFSET $2`, [
+    Math.min(Math.max(1, limit), 200),
+    Math.max(0, offset),
+  ]);
   return result.rows.map(rowToApp);
 }
 
@@ -150,8 +161,11 @@ export async function createContactMessage(data: Pick<ContactMessage, "name" | "
   return rowToMessage(result.rows[0]);
 }
 
-export async function listContactMessages(): Promise<ContactMessage[]> {
-  const result = await query(`SELECT * FROM contact_messages ORDER BY created_at DESC`);
+export async function listContactMessages(offset = 0, limit = 200): Promise<ContactMessage[]> {
+  const result = await query(`SELECT * FROM contact_messages ORDER BY created_at DESC LIMIT $1 OFFSET $2`, [
+    Math.min(Math.max(1, limit), 200),
+    Math.max(0, offset),
+  ]);
   return result.rows.map(rowToMessage);
 }
 

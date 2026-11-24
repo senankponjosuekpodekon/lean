@@ -103,7 +103,11 @@ function AntragInner() {
 
   const validateStep = () => {
     if (step === 1) {
-      return amountCents >= LOAN_CONFIG.minAmountCents && LOAN_CONFIG.availableTerms.includes(term);
+      return (
+        amountCents >= LOAN_CONFIG.minAmountCents &&
+        amountCents <= LOAN_CONFIG.maxAmountCents &&
+        LOAN_CONFIG.availableTerms.includes(term)
+      );
     }
     if (step === 2) {
       return firstName && lastName && birthDate && street && zip && city && email.includes("@") && phone;
@@ -236,6 +240,11 @@ function AntragInner() {
               <div className="space-y-6">
                 <h2 className="font-heading text-2xl font-bold text-primary">{t.projectTitle}</h2>
                 <Input label={t.loanAmountLabel} name="amount" type="text" value={(amountCents / 100).toString()} onChange={(v) => setAmountCents(parseAmountToCents(v))} />
+                <p className="text-xs text-text-secondary -mt-3">
+                  {t.amountRangeHint
+                    .replace("{min}", formatCurrency(LOAN_CONFIG.minAmountCents))
+                    .replace("{max}", formatCurrency(LOAN_CONFIG.maxAmountCents))}
+                </p>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-medium text-text">{t.termLabel}</label>
                   <select value={term} onChange={(e) => setTerm(Number(e.target.value))} className="h-12 px-4 rounded-lg border border-border bg-surface text-text focus:outline-none focus:ring-2 focus:ring-primary/30">

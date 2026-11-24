@@ -3,7 +3,11 @@ import { createApplication, listApplications, updateStatus, type Application, ty
 import { requireAdmin } from "@/lib/admin-auth";
 import { applicationEmails } from "@/lib/emails";
 import { defaultLocale, isLocale } from "@/lib/i18n";
+import { LOAN_CONFIG } from "@/lib/loan";
 import { sendMails } from "@/lib/mailer";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const STATUSES: Application["status"][] = ["received", "reviewing", "missing_info", "in_analysis", "decision_communicated", "closed"];
 const DETAIL_FIELDS = ["description", "birthDate", "street", "zip", "city", "status", "occupation", "employer", "tenure", "income", "expenses", "existingLoans"];
@@ -11,6 +15,9 @@ const DETAIL_FIELDS = ["description", "birthDate", "street", "zip", "city", "sta
 const isNonEmptyString = (v: unknown, max = 500): v is string => typeof v === "string" && v.trim().length > 0 && v.length <= max;
 
 export async function POST(request: Request) {
+  if (!rateLimit(`applications:${clientIp(request)}`, 5, 60_000)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -19,7 +26,13 @@ export async function POST(request: Request) {
   }
 
   const { amountCents, termMonths, purpose, firstName, lastName, email, phone } = body;
-  if (!Number.isInteger(amountCents) || (amountCents as number) <= 0 || !Number.isInteger(termMonths) || (termMonths as number) <= 0) {
+  if (
+    !Number.isInteger(amountCents) ||
+    (amountCents as number) < LOAN_CONFIG.minAmountCents ||
+    (amountCents as number) > LOAN_CONFIG.maxAmountCents ||
+    !Number.isInteger(termMonths) ||
+    !(LOAN_CONFIG.availableTerms as readonly number[]).includes(termMonths as number)
+  ) {
     return NextResponse.json({ error: "Invalid amount or term" }, { status: 400 });
   }
   for (const [field, value] of Object.entries({ purpose, firstName, lastName, email, phone })) {
@@ -27,7 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `Missing field: ${field}` }, { status: 400 });
     }
   }
-  if (!(email as string).includes("@")) {
+  if (!EMAIL_PATTERN.test(email as string)) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
   }
 
@@ -61,14 +74,15 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await requireAdmin();
   } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    return NextResponse.json(await listApplications());
+    const offset = Number(new URL(request.url).searchParams.get("offset") ?? 0);
+    return NextResponse.json(await listApplications(Number.isFinite(offset) ? offset : 0));
   } catch (error) {
     console.error("listApplications failed:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
