@@ -103,7 +103,11 @@ function AntragInner() {
 
   const validateStep = () => {
     if (step === 1) {
-      return amountCents >= LOAN_CONFIG.minAmountCents && LOAN_CONFIG.availableTerms.includes(term);
+      return (
+        amountCents >= LOAN_CONFIG.minAmountCents &&
+        amountCents <= LOAN_CONFIG.maxAmountCents &&
+        LOAN_CONFIG.availableTerms.includes(term)
+      );
     }
     if (step === 2) {
       return firstName && lastName && birthDate && street && zip && city && email.includes("@") && phone;

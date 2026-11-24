@@ -10,9 +10,12 @@ export async function POST(request: Request) {
   }
 
   const isProd = process.env.NODE_ENV === "production";
+  const secret = process.env.ADMIN_SESSION_SECRET;
   const expected = process.env.ADMIN_PASSWORD || (isProd ? undefined : "admin2026");
-  if (!expected || (isProd && !process.env.ADMIN_SESSION_SECRET)) {
-    console.error("Admin login requested but ADMIN_PASSWORD/ADMIN_SESSION_SECRET are not configured");
+  if (!expected || (isProd && (!secret || secret.length < 16))) {
+    console.error(
+      "Admin login misconfigured: ADMIN_PASSWORD is unset and/or ADMIN_SESSION_SECRET is missing or shorter than 16 characters"
+    );
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 

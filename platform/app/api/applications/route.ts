@@ -74,14 +74,15 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await requireAdmin();
   } catch {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    return NextResponse.json(await listApplications());
+    const offset = Number(new URL(request.url).searchParams.get("offset") ?? 0);
+    return NextResponse.json(await listApplications(Number.isFinite(offset) ? offset : 0));
   } catch (error) {
     console.error("listApplications failed:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
