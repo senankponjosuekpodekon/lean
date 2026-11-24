@@ -7,7 +7,7 @@ export const LEGAL_UPDATED = "Oktober 2026";
 
 export function LegalDocument({ title, description, children }: { title: string; description?: string; children: ReactNode }) {
   return (
-    <div className="max-w-7xl mx-auto px-5 lg:px-12 py-12 lg:py-20">
+    <div lang="de" className="max-w-7xl mx-auto px-5 lg:px-12 py-12 lg:py-20">
       <PageHeader title={title} description={description} />
       <Card className="max-w-3xl mx-auto space-y-8 lg:p-10">
         {children}

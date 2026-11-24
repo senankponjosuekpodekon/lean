@@ -1,6 +1,7 @@
 import { Suspense, type ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { isLocale, locales } from "@/lib/i18n";
+import { HtmlLang } from "@/components/HtmlLang";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -15,7 +16,20 @@ async function LangGuard({
 }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
-  return <>{children}</>;
+  return (
+    <>
+      {/* The root <html lang="de"> is static. The inline script fixes the language as the
+          HTML streams (before hydration); HtmlLang keeps it correct on client-side
+          navigations, where the script does not re-run. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `document.documentElement.lang=${JSON.stringify(lang)}`,
+        }}
+      />
+      <HtmlLang lang={lang} />
+      {children}
+    </>
+  );
 }
 
 export default function LangLayout({

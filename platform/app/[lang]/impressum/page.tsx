@@ -1,5 +1,7 @@
 import { CompanyAddress, LegalDocument, LegalSection } from "@/components/LegalDocument";
 import { company, companyCityLine, companyDisplayName } from "@/lib/company";
+import { localizedMetadata } from "@/lib/seo";
+import { getDictionary, isLocale } from "@/lib/i18n";
 
 export default function ImpressumPage() {
   return (
@@ -91,4 +93,11 @@ export default function ImpressumPage() {
       </LegalSection>
     </LegalDocument>
   );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = getDictionary(lang);
+  return localizedMetadata({ lang, route: "impressum", title: t.imprint, description: t.footerTagline });
 }

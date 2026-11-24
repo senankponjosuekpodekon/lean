@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { locales } from "@/lib/i18n";
+import { defaultLocale, locales } from "@/lib/i18n";
 
 const baseUrl = "https://velmora-finanz.de";
 
@@ -35,9 +35,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: "weekly",
         priority: route === "" ? 1 : 0.7,
         alternates: {
-          languages: Object.fromEntries(
-            locales.map((l) => [l, `${baseUrl}${path.replace(/^\/${locale}/, `/${l}`)}`])
-          ),
+          languages: {
+            ...Object.fromEntries(
+              locales.map((l) => [l, `${baseUrl}${route ? `/${l}/${route}` : `/${l}`}`])
+            ),
+            "x-default": `${baseUrl}${route ? `/${defaultLocale}/${route}` : `/${defaultLocale}`}`,
+          },
         },
       });
     }

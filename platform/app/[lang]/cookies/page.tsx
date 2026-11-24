@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { LegalDocument, LegalSection } from "@/components/LegalDocument";
+import { localizedMetadata } from "@/lib/seo";
+import { getDictionary, isLocale } from "@/lib/i18n";
 
 const storage = [
   { name: "admin_session", type: "Cookie (HTTP-only)", purpose: "Hält die Anmeldung im internen Verwaltungsbereich aufrecht.", duration: "Bis zur Abmeldung, höchstens 8 Stunden", scope: "Nur Verwaltungsbereich" },
@@ -70,4 +72,11 @@ export default function CookiesPage() {
       </LegalSection>
     </LegalDocument>
   );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = getDictionary(lang);
+  return localizedMetadata({ lang, route: "cookies", title: t.cookies, description: t.footerTagline });
 }

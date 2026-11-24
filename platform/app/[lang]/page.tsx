@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { LOAN_CONFIG, calculateLoan, formatCurrency } from "@/lib/loan";
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary, type Locale, isLocale } from "@/lib/i18n";
+import { localizedMetadata } from "@/lib/seo";
 
 export default function HomePage({ params }: { params: Promise<{ lang: Locale }> }) {
   return (
@@ -46,6 +47,12 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
     { title: t.stepProposal, desc: t.stepProposalDesc, icon: "/icons/icon-proposal.svg" },
   ];
 
+  const testimonials = [
+    { name: t.testimonial1Name, location: t.testimonial1Location, text: t.testimonial1Text },
+    { name: t.testimonial2Name, location: t.testimonial2Location, text: t.testimonial2Text },
+    { name: t.testimonial3Name, location: t.testimonial3Location, text: t.testimonial3Text },
+  ];
+
   const faq = [
     { q: t.faqBinding, a: t.faqBindingAnswer },
     { q: t.faqGuarantee, a: t.faqGuaranteeAnswer },
@@ -84,7 +91,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
               </div>
               <div className="p-3 rounded-lg bg-background">
                 <p className="text-sm text-text-secondary">{t.duration}</p>
-                <p className="font-semibold text-text">{LOAN_CONFIG.defaultTerm} mois</p>
+                <p className="font-semibold text-text">{LOAN_CONFIG.defaultTerm} {t.months}</p>
               </div>
               <div className="p-3 rounded-lg bg-background col-span-2">
                 <p className="text-sm text-text-secondary">{t.estimatedMonthly}</p>
@@ -154,6 +161,34 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
         </div>
       </section>
 
+      {/* Témoignages */}
+      <section className="w-full bg-surface rounded-3xl py-12 lg:py-20 animate-fade-in-up">
+        <div className="max-w-7xl mx-auto px-5 lg:px-12">
+          <div className="text-center mb-10">
+          <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">{t.testimonialsTitle}</h2>
+          <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">{t.testimonialsSubtitle}</p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {testimonials.map((item, i) => (
+            <Card key={item.name} className={`flex flex-col p-6 animate-fade-in-up stagger-${i + 1}`}>
+              <div className="flex gap-1 text-accent mb-4" aria-label="5/5">
+                {Array.from({ length: 5 }).map((_, s) => (
+                  <svg key={s} width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-text-secondary text-sm leading-relaxed flex-1">&ldquo;{item.text}&rdquo;</p>
+              <div className="mt-5 pt-4 border-t border-border">
+                <p className="font-heading font-bold text-primary">{item.name}</p>
+                <p className="text-xs text-text-secondary">{item.location}</p>
+              </div>
+            </Card>
+          ))}
+        </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section className="w-full bg-accent-secondary/30 rounded-3xl py-12 lg:py-20 animate-fade-in-up">
         <div className="max-w-7xl mx-auto px-5 lg:px-12">
@@ -182,4 +217,11 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
       </section>
     </div>
   );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const t = getDictionary(lang);
+  return localizedMetadata({ lang, route: "", title: t.tagline, description: t.heroDescription });
 }
