@@ -1,6 +1,7 @@
 export const ADS_ID = "AW-18526517907";
 export const ADS_CONVERSION_OUTBOUND = "AW-18526517907/SrEqCJShx74dEJP1kIJF";
 export const ADS_CONVERSION_LEAD_FORM = "AW-18526517907/rlltCMrIx74dEJP1kIJF";
+export const ADS_CONVERSION_CONTACT = "AW-18526517907/-CXKCPjPx74dEJP1kIJF";
 
 declare global {
   interface Window {
@@ -26,4 +27,8 @@ export function trackOutboundClick() {
 
 export function trackLeadFormSubmit() {
   trackConversion(ADS_CONVERSION_LEAD_FORM);
+}
+
+export function trackContactSubmit() {
+  trackConversion(ADS_CONVERSION_CONTACT);
 }

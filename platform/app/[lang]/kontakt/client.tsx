@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { PageHeader } from "@/components/PageHeader";
 import { getPageDictionary } from "@/lib/i18n-pages";
-import { trackLeadFormSubmit } from "@/lib/gtag";
+import { trackContactSubmit } from "@/lib/gtag";
 import type { Locale } from "@/lib/i18n";
 
 export default function KontaktPage() {
@@ -42,7 +42,7 @@ function KontaktInner() {
       });
       if (res.ok) {
         setSent(true);
-        trackLeadFormSubmit();
+        trackContactSubmit();
       }
       else setError(true);
     } catch {
