@@ -84,7 +84,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
               </div>
               <div className="p-3 rounded-lg bg-background">
                 <p className="text-sm text-text-secondary">{t.duration}</p>
-                <p className="font-semibold text-text">{LOAN_CONFIG.defaultTerm} mois</p>
+                <p className="font-semibold text-text">{LOAN_CONFIG.defaultTerm} {t.months}</p>
               </div>
               <div className="p-3 rounded-lg bg-background col-span-2">
                 <p className="text-sm text-text-secondary">{t.estimatedMonthly}</p>
