@@ -51,6 +51,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
     { name: t.testimonial1Name, location: t.testimonial1Location, text: t.testimonial1Text },
     { name: t.testimonial2Name, location: t.testimonial2Location, text: t.testimonial2Text },
     { name: t.testimonial3Name, location: t.testimonial3Location, text: t.testimonial3Text },
+    { name: t.testimonial4Name, location: t.testimonial4Location, text: t.testimonial4Text },
   ];
 
   const faq = [
@@ -168,7 +169,7 @@ async function HomeAsync({ params }: { params: Promise<{ lang: Locale }> }) {
           <h2 className="font-heading text-3xl lg:text-5xl font-bold text-primary">{t.testimonialsTitle}</h2>
           <p className="mt-4 text-lg text-text-secondary max-w-2xl mx-auto">{t.testimonialsSubtitle}</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
           {testimonials.map((item, i) => (
             <Card key={item.name} className={`flex flex-col p-6 animate-fade-in-up stagger-${i + 1}`}>
               <div className="flex gap-1 text-accent mb-4" aria-label="5/5">
